@@ -69,7 +69,7 @@ public class GUI1024Panel extends JPanel {
 			JOptionPane.showMessageDialog(null, "Incomplete implementation getNonEmptyTiles()");
 			return;
 		}
-		for (Cell c : out) {
+		for (Cell c : out) { 
 			JLabel z = gameBoardUI[c.getRow()][c.getColumn()];
 			z.setText(String.valueOf(Math.abs(c.getValue())));
 			z.setForeground(c.getValue() > 0 ? Color.BLACK : Color.RED);
@@ -129,7 +129,7 @@ public class GUI1024Panel extends JPanel {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-
+ 
 		}
 	}
 

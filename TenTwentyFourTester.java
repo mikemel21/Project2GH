@@ -87,7 +87,7 @@ public class TenTwentyFourTester {
 				data = new int[rows][cols];
 				for (int k = 0; k < rows; k++)
 					for (int m = 0; m < cols; m++)
-						data[k][m] = 1;
+						data[k][m] = 1; 
 				gameLogic.setValues(data);
 				assertEquals("Your game logic should be able to handle game board of any size", rows * cols,
 						gameLogic.getNonEmptyTiles().size());
@@ -125,7 +125,7 @@ public class TenTwentyFourTester {
 	{
 		int[][] vals = new int[NROWS][NCOLS];
 		for (int count = 0; count < REPEAT_COUNT; count++) {
-			for (int k = 0; k < vals.length; k++)
+			for (int k = 0; k < vals.length; k++) 
 				for (int m = 0; m < vals[0].length; m++) {
 					if (gen.nextBoolean())
 						vals[k][m] = 0;
@@ -134,7 +134,7 @@ public class TenTwentyFourTester {
 					}
 				}
 			swiper(gameLogic, null, null, vals, vals);
-		}
+		} 
 	}
 
 	private int countNonZero(int[][] arr)
@@ -561,7 +561,7 @@ public class TenTwentyFourTester {
 	{
 		final int N = 10;
 		gameLogic.resizeBoard(N, N, GAME_GOAL);
-		int[][] mat = new int[N][N];
+		int[][] mat = new int[N][N]; 
 		for (int k = 0; k < mat.length; k++) {
 			for (int m = 0; m < mat[k].length; m++)
 				mat[k][m] = GAME_GOAL / 2;

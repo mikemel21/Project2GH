@@ -7,7 +7,7 @@ public class TextUI {
     private int[][] grid;
     private static int CELL_WIDTH = 3;
     private static String NUM_FORMAT, BLANK_FORMAT;
-    private Scanner inp;
+    private Scanner inp; 
 
     public TextUI() {
         game = new NumberGameArrayList();

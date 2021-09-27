@@ -33,7 +33,7 @@ public class Cell implements Comparable<Cell> {
     /**
 	 * @return the row
 	 */
-	public int getRow() {
+	public int getRow() { 
 		return row;
 	}
 	
