@@ -64,10 +64,10 @@ public class TenTwentyFourTester {
 	public void testSetValues()
 	{
 		final int[][] zeros = new int[NROWS][NCOLS];
-		final int[][] one = new int[NROWS][NCOLS];
+		final int[][] one = new int[NROWS][NCOLS]; 
 		one[gen.nextInt(NROWS)][gen.nextInt(NCOLS)] = 1;
 
-		gameLogic.setValues(zeros);
+		gameLogic.setValues(zeros); 
 		List<Cell> zeroList = (List<Cell>) gameLogic.getNonEmptyTiles().clone();
 		assertNotNull("getNonEmptyTiles() should never return null", zeroList);
 		gameLogic.setValues(one);

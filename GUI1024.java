@@ -13,5 +13,5 @@ public class GUI1024 {
 
         gui.setSize(panel.getSize());
         gui.setVisible(true);
-    } 
+    }  
 }

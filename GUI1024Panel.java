@@ -53,7 +53,7 @@ public class GUI1024Panel extends JPanel {
 		// Allow keys to be pressed to control the game
 		setFocusable(true);
 		addKeyListener(new SlideListener());
-		
+		 
 		// Initialize the game GUI and logic
 		resizeBoard();
 	}
@@ -133,13 +133,14 @@ public class GUI1024Panel extends JPanel {
 		}
 	}
 
+	//play board
 	public void resizeBoard() {
 
 		// Initialize the game logic
 		nRows = 4;
 		nCols = 4;
-		gameLogic = new NumberGameArrayList();
-		gameLogic.resizeBoard(nRows, nCols, 16);
+		gameLogic = new NumberGameArrayList(); 
+		gameLogic.resizeBoard(nRows, nCols, 16); 
 
 		// Update the GUI
 		// Start with changing the panel size and creating a new
