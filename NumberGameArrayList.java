@@ -66,7 +66,7 @@ public class NumberGameArrayList implements NumberSlider {
 	public void reset() {
 		placeRandomValue();
 	}
-
+ 
 	@Override
 	public void setValues(int[][] ref) {
 	}

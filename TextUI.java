@@ -6,7 +6,7 @@ public class TextUI {
     private NumberSlider game;
     private int[][] grid; 
     private static int CELL_WIDTH = 3;
-    private static String NUM_FORMAT, BLANK_FORMAT;
+    private static String NUM_FORMAT, BLANK_FORMAT; 
     private Scanner inp; 
 
     public TextUI() {

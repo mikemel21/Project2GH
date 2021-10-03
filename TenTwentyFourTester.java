@@ -108,7 +108,7 @@ public class TenTwentyFourTester {
 			int newCount = gameLogic.getNonEmptyTiles().size();
 			assertTrue (newCount == oldCount + 1);
 		}
-		gameLogic.placeRandomValue();
+		gameLogic.placeRandomValue(); 
 	} 
 
 	private int nextTileValue()
