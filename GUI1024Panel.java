@@ -17,7 +17,7 @@ public class GUI1024Panel extends JPanel {
 	private JButton upButton, downButton, leftButton, rightButton;
 	private JPanel playPanel, gamePanel;
 
-	public GUI1024Panel() {
+	public GUI1024Panel() { 
 
 		// Use helper function to initialize game
 		// This lets us reuse the function to allow the user to
@@ -31,7 +31,7 @@ public class GUI1024Panel extends JPanel {
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
 		// Indicate which column
-		c.gridx = 0;
+		c.gridx = 0; 
 		// Indicate which row
 		c.gridy = 0;
 		// Indicate number of columns to span
@@ -48,7 +48,7 @@ public class GUI1024Panel extends JPanel {
 
 		// Initialize the game panel
 		gamePanel = new JPanel();
-		playPanel.add(gamePanel, c);
+		playPanel.add(gamePanel, c); 
 
 		// Allow keys to be pressed to control the game
 		setFocusable(true);
@@ -137,8 +137,8 @@ public class GUI1024Panel extends JPanel {
 	public void resizeBoard() {
 
 		// Initialize the game logic
-		nRows = 4;
-		nCols = 4;
+		nRows = 6;
+		nCols = 6;
 		gameLogic = new NumberGameArrayList(); 
 		gameLogic.resizeBoard(nRows, nCols, 16); 
 
@@ -165,7 +165,7 @@ public class GUI1024Panel extends JPanel {
 				gameBoardUI[k][m].setMinimumSize(new Dimension(100, 100));
 
 				//						c.fill = GridBagConstraints.HORIZONTAL;
-				// Indicate which column
+				// Indicate which column 
 				c.gridx = m;
 				// Indicate which row
 				c.gridy = k;

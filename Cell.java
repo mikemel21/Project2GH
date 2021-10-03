@@ -6,8 +6,8 @@ public class Cell implements Comparable<Cell> {
     
 	public Cell()
     {
-        this(0,0,0);
-    }
+        this(0,0,0);  
+    } 
     public Cell (int r, int c, int v)
     {
         row = r;

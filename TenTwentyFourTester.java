@@ -109,7 +109,7 @@ public class TenTwentyFourTester {
 			assertTrue (newCount == oldCount + 1);
 		}
 		gameLogic.placeRandomValue();
-	}
+	} 
 
 	private int nextTileValue()
 	{
