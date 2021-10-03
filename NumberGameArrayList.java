@@ -1,169 +1,120 @@
-package Project2;
+package project2;
 
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
+import project2.Cell;
+
 public class NumberGameArrayList implements NumberSlider {
 
 	// instance variables:
-	private int height, width, winningVal; 
+	private int numRows, numCols, winningVal; 
 
 	private ArrayList<Cell> cells;
-	private ArrayList<Cell> nonEmptyCells;
 
 	public NumberGameArrayList () {
 		cells = new ArrayList<Cell>();
-		nonEmptyCells = new ArrayList<Cell>();
 	}
 	
-	public int getWinningVal() {
-		return winningVal;
-	}
-	public void setWinningVal(int winningVal) {
-		this.winningVal = winningVal;
-	}
-	public int getHeight() {
-		return height;
-	}
-	public void setHeight(int height) {
-		this.height = height;
-	}
-	public int getWidth() {
-		return width;
-	}
-	public void setWidth(int width) {
-		this.width = width;
-	}
+//	public int getWinningVal() {
+//		return winningVal;
+//	}
+//	
+//	public void setWinningVal(int winningVal) {
+//		this.winningVal = winningVal;
+//	}
+//	
+//	public int getNumRows() {
+//		return numRows;
+//	}
+//	
+//	public void setNumRows(int numRows) {
+//		this.numRows = numRows;
+//	}
+//	
+//	public int getNumCols() {
+//		return numCols;
+//	}
+//	
+//	public void setNumCols(int numCols) {
+//		this.numCols = numCols;
+//	}
 	
 	@Override
-	public void resizeBoard(int height, int width, int winningValue) {
-		setHeight(height);
-		setWidth(width);
+	public void resizeBoard(int numRows, int numCols, int winningVal) {
 		
-		//setValues(new int[getHeight()][getWidth()]);
-		for (int r = 0; r < getHeight(); r++) {
-			for (int c = 0; c < getWidth(); c++) {
+		//adds a new cell for each row and column. I think this might mess up if we resize during the game.
+		for (int r = 0; r < numRows; r++) {
+			for (int c = 0; c < numCols; c++) {
 				//getCellAt(r, c);
 				cells.add(new Cell(r, c, 0));
 			}
-		}		
+		}
 		
-		// reset game logic
-		reset();
-		
-				
-		// set new winning value
-//		if (winningValue % 2 == 0) {
-//			setWinningVal(winningValue);
-//		} else {
-			// throws IAE if winning value is not even
-//			throw new IllegalArgumentException(); 
-//		}
+		//sets new values to instance variables
+		this.numRows = numRows;
+		this.numCols = numCols;
+		this.winningVal = winningVal;
 	}
 
 	@Override
 	public void reset() {
+		
+		//sets all cells to 0, regardless of current value.
+		for(int i = 0; i < cells.size(); i++) {
+			cells.get(i).setValue(0);
+		}
+		
+		//places 2 random values
+		placeRandomValue();
 		placeRandomValue();
 	}
  
 	@Override
 	public void setValues(int[][] ref) {
+		
+		//loops through the 2d array and sets the value of the cell at that location to that value.
+		for (int row = 0; row < ref.length; row++) {
+			for (int col = 0; col < ref[row].length; col++) {
+				getCellAt(row, col).setValue(ref[row][col]);
+			}
+		}
 	}
 
 	@Override
 	public Cell placeRandomValue() {
-		Random r = new Random(); 
-		Cell c = new Cell();
-		
-		// random row
-		int ranRow = getRandomRow();
-		// random col
-		int ranCol = getRandomColumn();
-		// random value
-		int ranVal = getRandomValue(); 
-		
-		for (int i = 0; i < getWidth(); i++) {
-			for (int j = 0; j < getHeight(); j++) {
-				if (getCellAt(i, j).getValue() == 0) {
-					getCellAt(ranRow, ranCol).setValue(ranVal);
-				} else {
-					ranRow = getRandomRow();
-					ranCol = getRandomColumn();
-				}
+		int randVal = 0;
+		int randRow = 0;
+		int randCol = 0;
+		for(int i = 0; i < cells.size(); i++) {
+			randVal = getRandomValue();
+			randRow = getRandomRow();
+			randCol = getRandomCol();
+			if(getCellAt(randRow, randCol).getValue() == 0) {
+				getCellAt(randRow, randCol).setValue(randVal);
+				return getCellAt(randRow, randCol);
 			}
 		}
 		
-		return c;
-	}
-	
-	/** 
-	 * Makes random choice between 2 and 4 for placeRandomvalue() method 
-	 * 
-	 * @return int: random cell value
-	 * */
-	public int getRandomValue() {
-		Random r = new Random();
-		// chooses an int of either 2, 3, or 4
-		int randomValue = ThreadLocalRandom.current().nextInt(2,4);
-		// runs if the randomValue is 3 
-		while (randomValue == 3) {
-			randomValue = ThreadLocalRandom.current().nextInt(2,4);
-		}
-		
-		return randomValue;
-	}
-	
-	/** 
-	 * gets a random number between 0 and the amount of rows (getWidth())
-	 * 
-	 * @return int: value used for a random row
-	 * */
-	public int getRandomRow () {
-		int randomRow = ThreadLocalRandom.current().nextInt(0, getWidth());
-		return randomRow;
-	}
-	
-	/** 
-	 * gets a random number between 0 and the amount of columns (getHeight())
-	 * 
-	 * @return int: value used for a random column
-	 * */
-	public int getRandomColumn() {
-		int randomColumn = ThreadLocalRandom.current().nextInt(0, getHeight());
-		return randomColumn;
+		//this should only happen if there were no empty squares, will implement later
+		return null;
 	}
 
 	@Override
 	public boolean slide(SlideDirection dir) { 
 		return false;
 	}
-
-	// 2d array to linear arraylist
-	private Cell getCellAt (int row, int col) {
-		int index = 4 * row + col;
-		
-		return cells.get(index);
-	}
 	
 	@Override
 	public ArrayList<Cell> getNonEmptyTiles() {
-//		for (int r = 0; r < getHeight(); r++) { 
-//			for (int c = 0; c < getWidth(); c++) {
-//				if (getCellAt(r, c).getValue() != 0) {   
-//					nonEmptyCells.add(new Cell(getCellAt(r,c).getRow(), getCellAt(r,c).getColumn(), getCellAt(r,c).getValue())); 
-//				}
-//			} 
-//		}
-		// TESTING PURPOSES cells.add(new Cell(1,1,2));
+		ArrayList<Cell> nonEmptyTiles = new ArrayList<Cell>();
 		for (Cell c: cells) {
 			if (c.getValue() != 0) {
-				nonEmptyCells.add(c);
+				nonEmptyTiles.add(c);
 			}
 		}
-		
-		// return ArrayList of cells that have a value
-		return nonEmptyCells;
+		return nonEmptyTiles;
 	}
 
 	@Override
@@ -173,5 +124,57 @@ public class NumberGameArrayList implements NumberSlider {
 
 	@Override
 	public void undo() {
-	} 
+
+	}
+	
+	/**
+	 * Converts 2d array to linear arrayList
+	 * 
+	 * @param row the row of the Cell
+	 * @param col the col of the Cell
+	 * @return the cell at the appropriate index
+	 */
+	private Cell getCellAt (int row, int col) {
+
+		//we will probably need exceptions thrown here to make sure row and col are good inputs
+		int index = numCols * row + col;
+
+		return cells.get(index);
+	}
+
+	/** 
+	 * Makes random choice between 2 and 4 for placeRandomvalue() method 
+	 * 
+	 * @return int: random cell value
+	 * */
+	private int getRandomValue() {
+		Random r = new Random();
+
+		//returns random integer of either 2 or 4
+		return (r.nextInt(2) + 1) * 2;
+	}
+
+	/** 
+	 * returns random integer from 0 to numRows - 1
+	 * 
+	 * @return int: value used for a random row
+	 * */
+	private int getRandomRow() {
+		Random r = new Random();
+
+		//return random integer from 0 to numRows - 1
+		return r.nextInt(numRows);
+	}
+
+	/** 
+	 * returns random integer from 0 to numCols - 1
+	 * 
+	 * @return int: value used for a random column
+	 * */
+	private int getRandomCol() {
+		Random r = new Random();
+
+		//return random integer from 0 to numCols - 1
+		return r.nextInt(numCols);
+	}
 }

@@ -1,4 +1,4 @@
-package Project2;
+package project2;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
@@ -137,8 +137,8 @@ public class GUI1024Panel extends JPanel {
 	public void resizeBoard() {
 
 		// Initialize the game logic
-		nRows = 6;
-		nCols = 6;
+		nRows = 4;
+		nCols = 4;
 		gameLogic = new NumberGameArrayList(); 
 		gameLogic.resizeBoard(nRows, nCols, 16); 
 
