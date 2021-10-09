@@ -109,18 +109,18 @@ public class GUI1024Panel extends JPanel {
 			}
 			if (moved) {
 				updateBoard();
-				if (gameLogic.getStatus().equals(GameStatus.USER_WON))
-					JOptionPane.showMessageDialog(null, "You won");
-				else if (gameLogic.getStatus().equals(GameStatus.USER_LOST)) {
-					int resp = JOptionPane.showConfirmDialog(null, "Do you want to play again?", "TentOnly Over!",
-							JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-					if (resp == JOptionPane.YES_OPTION) {
-						gameLogic.reset();
-						updateBoard();
-					} else {
-						System.exit(0);
-					}
-				}
+//				if (gameLogic.getStatus().equals(GameStatus.USER_WON))
+//					JOptionPane.showMessageDialog(null, "You won");
+//				else if (gameLogic.getStatus().equals(GameStatus.USER_LOST)) {
+//					int resp = JOptionPane.showConfirmDialog(null, "Do you want to play again?", "TentOnly Over!",
+//							JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+//					if (resp == JOptionPane.YES_OPTION) {
+//						gameLogic.reset();
+//						updateBoard();
+//					} else {
+//						System.exit(0);
+//					}
+//				}
 			}
 		}
 
@@ -138,7 +138,7 @@ public class GUI1024Panel extends JPanel {
 
 		// Initialize the game logic
 		nRows = 4;
-		nCols = 4;
+		nCols = 8;
 		gameLogic = new NumberGameArrayList(); 
 		gameLogic.resizeBoard(nRows, nCols, 16); 
 

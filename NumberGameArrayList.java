@@ -66,9 +66,16 @@ public class NumberGameArrayList implements NumberSlider {
 			cells.get(i).setValue(0);
 		}
 		
-		//places 2 random values
-		placeRandomValue();
-		placeRandomValue();
+//		//places 2 random values
+//		placeRandomValue();
+//		placeRandomValue();
+		int[][] ref = {
+				{4, 0, 2, 2, 4, 0, 2, 2},
+				{2, 2, 0, 4, 2, 2, 0, 4},
+				{2, 2, 2, 2, 2, 2, 2, 2},
+				{2, 2, 2, 4, 2, 2, 2, 4},
+				};
+		setValues(ref);
 	}
  
 	@Override
@@ -102,8 +109,16 @@ public class NumberGameArrayList implements NumberSlider {
 	}
 
 	@Override
-	public boolean slide(SlideDirection dir) { 
-		return false;
+	public boolean slide(SlideDirection dir) {
+		boolean moved = false;
+		if(dir == SlideDirection.RIGHT) {
+			moved = slideRight();
+			
+		}
+		if(moved) {
+			placeRandomValue();
+		}
+		return moved;
 	}
 	
 	@Override
@@ -176,5 +191,36 @@ public class NumberGameArrayList implements NumberSlider {
 
 		//return random integer from 0 to numCols - 1
 		return r.nextInt(numCols);
+	}
+	
+	
+	private boolean slideRight() {
+		boolean moved = false;
+		
+		for(int row = 0; row < numRows; row++) {
+			int temp = 0;
+			for(int col = numCols - 2; col >= 0; col--) {
+				if(getNonEmptyTiles().contains(getCellAt(row, col))) {
+					int i = 1;
+					while(getCellAt(row, col + i).getValue() == 0) {
+						moved = true;
+						getCellAt(row, col + i).setValue(getCellAt(row, col + i - 1).getValue());
+						getCellAt(row, col + i - 1).setValue(0);
+						if(col + i < numCols - 1) {
+							i++;
+						}
+						else {
+							break;
+						}
+					}
+					if(getCellAt(row, col + i).getValue() == getCellAt(row, col + i - 1).getValue()) {
+						moved = true;
+						getCellAt(row, col + i).setValue(2 * getCellAt(row, col + i).getValue());
+						getCellAt(row, col + i - 1).setValue(0);
+					}
+				}
+			}
+		}
+		return moved;
 	}
 }
