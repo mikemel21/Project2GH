@@ -60,6 +60,7 @@ public class NumberGameArrayList implements NumberSlider {
 //				{2, 2, 2, 4, 2, 0, 0, 0},
 //				{2, 2, 0, 4, 0, 2, 2, 0},
 //				{2, 2, 8, 4, 2, 4, 2, 4},
+//				{2, 0, 2, 0, 2, 0, 4, 4},
 //				};
 //		setValues(ref);
 	}
@@ -77,21 +78,15 @@ public class NumberGameArrayList implements NumberSlider {
 
 	@Override
 	public Cell placeRandomValue() {
-		int randVal = 0;
-		int randRow = 0;
-		int randCol = 0;
-		for(int i = 0; i < cells.size(); i++) {
-			randVal = getRandomValue();
-			randRow = getRandomRow();
-			randCol = getRandomCol();
-			if(getCellAt(randRow, randCol).getValue() == 0) {
-				getCellAt(randRow, randCol).setValue(randVal);
-				return getCellAt(randRow, randCol);
-			}
+		Cell randCell = getRandomCell();
+		if(randCell == null) {
+			//this should only happen if there were no empty squares, will implement later
+			return null;
 		}
-		
-		//this should only happen if there were no empty squares, will implement later
-		return null;
+		else {
+			randCell.setValue(getRandomValue());
+			return randCell;
+		}
 	}
 
 	@Override
@@ -116,6 +111,7 @@ public class NumberGameArrayList implements NumberSlider {
 		else {
 			moved = slideUp();
 		}
+		
 		if(moved) {
 			placeRandomValue();
 		}
@@ -169,7 +165,7 @@ public class NumberGameArrayList implements NumberSlider {
 	/** 
 	 * Makes random choice between 2 and 4 for placeRandomvalue() method 
 	 * 
-	 * @return int: random cell value
+	 * @return either a 2 or 4, with a 90% chance of it returning a 2
 	 * */
 	private int getRandomValue() {
 		Random r = new Random();
@@ -180,35 +176,62 @@ public class NumberGameArrayList implements NumberSlider {
 		else {
 			return 4;
 		}
-		//returns random integer of either 2 or 4
-//		return (r.nextInt(2) + 1) * 2;
-	}
-
-	/** 
-	 * returns random integer from 0 to numRows - 1
-	 * 
-	 * @return int: value used for a random row
-	 * */
-	private int getRandomRow() {
-		Random r = new Random();
-
-		//return random integer from 0 to numRows - 1
-		return r.nextInt(numRows);
-	}
-
-	/** 
-	 * returns random integer from 0 to numCols - 1
-	 * 
-	 * @return int: value used for a random column
-	 * */
-	private int getRandomCol() {
-		Random r = new Random();
-
-		//return random integer from 0 to numCols - 1
-		return r.nextInt(numCols);
 	}
 	
+	/**
+	 *
+	 * @return an arraylist of Cells. Each cell holds the (row,column) and
+	 * value of an empty tile
+	 */
+	private ArrayList<Cell> getEmptyTiles(){
+		ArrayList<Cell> emptyTiles = new ArrayList<Cell>();
+		for (Cell c: cells) {
+			if (c.getValue() == 0) {
+				emptyTiles.add(c);
+			}
+		}
+		return emptyTiles;
+	}
 	
+	/**
+	 * 
+	 * @return random index of getEmptyTiles(). returns -1 if getEmptyTiles() is empty.
+	 */
+	private int getRandomIndex() {
+		Random r = new Random();
+		if(getEmptyTiles().size() > 0) {
+			return r.nextInt(getEmptyTiles().size());
+		}
+		else {
+			
+			//should only happen when there are no empty tiles
+			return -1;
+		}
+	}
+	
+	/**
+	 * 
+	 * @return random empty cell in cells. returns null if there are no empty cells.
+	 */
+	private Cell getRandomCell() {
+		int randIndex = getRandomIndex();
+		if(randIndex == -1) {
+			
+			//should only happen when board is full, will implement later
+			return null;
+		}
+		else {
+			int randRow = getEmptyTiles().get(randIndex).getRow();
+			int randCol = getEmptyTiles().get(randIndex).getColumn();
+			return getCellAt(randRow, randCol);
+		}
+	}
+	
+	/**
+	 * slides all tiles right, helper method for slide() method
+	 * 
+	 * @return true when the board changes
+	 */
 	private boolean slideRight() {
 		boolean moved = false;
 		for(int row = 0; row < numRows; row++) {
@@ -217,25 +240,20 @@ public class NumberGameArrayList implements NumberSlider {
 			int accessibleCol = numCols;
 			for(int col = numCols - 2; col >= 0; col--) {
 				if(getNonEmptyTiles().contains(getCellAt(row, col))) {
-					int i = 1;
-					
-					//checks if the next column is accessible, and checks if the next value is either 0 or the same value
-					while(col + i < accessibleCol 
-							&& (getCellAt(row, col + i).getValue() == 0 
-							|| getCellAt(row, col + i).getValue() == getCellAt(row, col + i - 1).getValue())) {
-
+					for(int i = 1; col + i < accessibleCol; i++) {
 						if(getCellAt(row, col + i).getValue() == getCellAt(row, col + i - 1).getValue()) {
 							getCellAt(row, col + i).setValue(2 * getCellAt(row, col + i).getValue());
-							getCellAt(row, col + i - 1).setValue(0);
 							
 							//sets the accessibleCol to the current column
 							accessibleCol = col + i;
 						}
-						else {
+						else if(getCellAt(row, col + i).getValue() == 0){
 							getCellAt(row, col + i).setValue(getCellAt(row, col + i - 1).getValue());
-							getCellAt(row, col + i - 1).setValue(0);
-							i++;
 						}
+						else {
+							break;
+						}
+						getCellAt(row, col + i - 1).setValue(0);
 						moved = true;
 					}
 				}
@@ -244,6 +262,11 @@ public class NumberGameArrayList implements NumberSlider {
 		return moved;
 	}
 	
+	/**
+	 * slides all tiles down, helper method for slide() method
+	 * 
+	 * @return true when the board changes
+	 */
 	private boolean slideDown() {
 		boolean moved = false;
 		for(int col = 0; col < numCols; col++) {
@@ -252,25 +275,20 @@ public class NumberGameArrayList implements NumberSlider {
 			int accessibleRow = numRows;
 			for(int row = numRows - 2; row >= 0; row--) {
 				if(getNonEmptyTiles().contains(getCellAt(row, col))) {
-					int i = 1;
-					
-					//checks if the next column is accessible, and checks if the next value is either 0 or the same value
-					while(row + i < accessibleRow 
-							&& (getCellAt(row + i, col).getValue() == 0 
-							|| getCellAt(row + i, col).getValue() == getCellAt(row + i - 1, col).getValue())) {
-
+					for(int i = 1; row + i < accessibleRow; i++) {
 						if(getCellAt(row + i, col).getValue() == getCellAt(row + i - 1, col).getValue()) {
 							getCellAt(row + i, col).setValue(2 * getCellAt(row + i, col).getValue());
-							getCellAt(row + i - 1, col).setValue(0);
 							
 							//sets the accessibleCol to the current column
 							accessibleRow = row + i;
 						}
-						else {
+						else if(getCellAt(row + i, col).getValue() == 0){
 							getCellAt(row + i, col).setValue(getCellAt(row + i - 1, col).getValue());
-							getCellAt(row + i - 1, col).setValue(0);
-							i++;
 						}
+						else {
+							break;
+						}
+						getCellAt(row + i - 1, col).setValue(0);
 						moved = true;
 					}
 				}
@@ -279,6 +297,11 @@ public class NumberGameArrayList implements NumberSlider {
 		return moved;
 	}
 	
+	/**
+	 * slides all tiles left, helper method for slide() method
+	 * 
+	 * @return true when the board changes
+	 */
 	private boolean slideLeft() {
 		boolean moved = false;
 		for(int row = 0; row < numRows; row++) {
@@ -287,25 +310,20 @@ public class NumberGameArrayList implements NumberSlider {
 			int accessibleCol = -1;
 			for(int col = 1; col < numCols; col++) {
 				if(getNonEmptyTiles().contains(getCellAt(row, col))) {
-					int i = 1;
-					
-					//checks if the next column is accessible, and checks if the next value is either 0 or the same value
-					while(col - i > accessibleCol 
-							&& (getCellAt(row, col - i).getValue() == 0 
-							|| getCellAt(row, col - i).getValue() == getCellAt(row, col - i + 1).getValue())) {
-
+					for(int i = 1; col - i > accessibleCol; i++) {
 						if(getCellAt(row, col - i).getValue() == getCellAt(row, col - i + 1).getValue()) {
 							getCellAt(row, col - i).setValue(2 * getCellAt(row, col - i).getValue());
-							getCellAt(row, col - i + 1).setValue(0);
 							
 							//sets the accessibleCol to the current column
 							accessibleCol = col - i;
 						}
-						else {
+						else if(getCellAt(row, col - i).getValue() == 0) {
 							getCellAt(row, col - i).setValue(getCellAt(row, col - i + 1).getValue());
-							getCellAt(row, col - i + 1).setValue(0);
-							i++;
 						}
+						else {
+							break;
+						}
+						getCellAt(row, col - i + 1).setValue(0);
 						moved = true;
 					}
 				}
@@ -314,6 +332,11 @@ public class NumberGameArrayList implements NumberSlider {
 		return moved;
 	}
 	
+	/**
+	 * slides all tiles up, helper method for slide() method
+	 * 
+	 * @return true when the board changes
+	 */
 	private boolean slideUp() {
 		boolean moved = false;
 		for(int col = 0; col < numCols; col++) {
@@ -322,25 +345,20 @@ public class NumberGameArrayList implements NumberSlider {
 			int accessibleRow = -1;
 			for(int row = 1; row < numRows; row++) {
 				if(getNonEmptyTiles().contains(getCellAt(row, col))) {
-					int i = 1;
-					
-					//checks if the next column is accessible, and checks if the next value is either 0 or the same value
-					while(row - i > accessibleRow 
-							&& (getCellAt(row - i, col).getValue() == 0 
-							|| getCellAt(row - i, col).getValue() == getCellAt(row - i + 1, col).getValue())) {
-
+					for(int i = 1; row - i > accessibleRow; i++) {
 						if(getCellAt(row - i, col).getValue() == getCellAt(row - i + 1, col).getValue()) {
 							getCellAt(row - i, col).setValue(2 * getCellAt(row - i, col).getValue());
-							getCellAt(row - i + 1, col).setValue(0);
 							
 							//sets the accessibleCol to the current column
 							accessibleRow = row - i;
 						}
-						else {
+						else if(getCellAt(row - i, col).getValue() == 0){
 							getCellAt(row - i, col).setValue(getCellAt(row - i + 1, col).getValue());
-							getCellAt(row - i + 1, col).setValue(0);
-							i++;
 						}
+						else {
+							break;
+						}
+						getCellAt(row - i + 1, col).setValue(0);
 						moved = true;
 					}
 				}
