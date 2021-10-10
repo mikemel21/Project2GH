@@ -171,7 +171,7 @@ public class TenTwentyFourTester {
 			assertTrue("getNonEmptyTiles() should return only non-zero cells", c.getValue() != 0);
 			actual[c.getRow()][c.getColumn()] = Math.abs(c.getValue());
 		}
-
+		
 		StringBuilder afterSb = new StringBuilder();
 		StringBuilder actualSb = new StringBuilder();
 		for (int k = 0; k < after.length; k++) {

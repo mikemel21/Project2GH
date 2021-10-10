@@ -138,7 +138,7 @@ public class GUI1024Panel extends JPanel {
 
 		// Initialize the game logic
 		nRows = 4;
-		nCols = 8;
+		nCols = 4;
 		gameLogic = new NumberGameArrayList(); 
 		gameLogic.resizeBoard(nRows, nCols, 16); 
 
