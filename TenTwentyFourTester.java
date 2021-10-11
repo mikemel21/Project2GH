@@ -1,4 +1,4 @@
-package project2;
+package Project2;
 
 import org.junit.AfterClass;
 import org.junit.Before;

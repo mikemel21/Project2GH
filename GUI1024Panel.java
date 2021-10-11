@@ -1,4 +1,4 @@
-package project2;
+package Project2;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
@@ -109,18 +109,18 @@ public class GUI1024Panel extends JPanel {
 			}
 			if (moved) {
 				updateBoard();
-//				if (gameLogic.getStatus().equals(GameStatus.USER_WON))
-//					JOptionPane.showMessageDialog(null, "You won");
-//				else if (gameLogic.getStatus().equals(GameStatus.USER_LOST)) {
-//					int resp = JOptionPane.showConfirmDialog(null, "Do you want to play again?", "TentOnly Over!",
-//							JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-//					if (resp == JOptionPane.YES_OPTION) {
-//						gameLogic.reset();
-//						updateBoard();
-//					} else {
-//						System.exit(0);
-//					}
-//				}
+				if (gameLogic.getStatus().equals(GameStatus.USER_WON))
+					JOptionPane.showMessageDialog(null, "You won");
+				else if (gameLogic.getStatus().equals(GameStatus.USER_LOST)) {
+					int resp = JOptionPane.showConfirmDialog(null, "Do you want to play again?", "TentOnly Over!",
+							JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+					if (resp == JOptionPane.YES_OPTION) {
+						gameLogic.reset();
+						updateBoard();
+					} else {
+						System.exit(0);
+					}
+				}
 			}
 		}
 

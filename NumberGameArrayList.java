@@ -1,10 +1,10 @@
-package project2;
+package Project2;
 
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
-import project2.Cell;
+import Project2.Cell;
 
 public class NumberGameArrayList implements NumberSlider {
 
@@ -13,7 +13,7 @@ public class NumberGameArrayList implements NumberSlider {
 	private ArrayList<Cell> cells;
 	private ArrayList< ArrayList<Cell> > boardStates = new ArrayList< ArrayList<Cell> >();
 	private GameStatus gameStatus = GameStatus.IN_PROGRESS;
-
+	
 	public NumberGameArrayList () {
 		cells = new ArrayList<Cell>();
 	}
@@ -134,7 +134,31 @@ public class NumberGameArrayList implements NumberSlider {
 
 	@Override
 	public GameStatus getStatus() {
-		return null;
+		for (int i = 0; i < cells.size(); i++) {
+			// checks if hasWinningValue() is true (if any cells have the winning value)
+			if (hasWinningValue() == true) {
+				gameStatus = GameStatus.USER_WON;
+			} 
+			// then checks if all tiles have a nonzero value and if the winning value ISNT on the board
+			else if (getNonEmptyTiles().size() == cells.size() && hasWinningValue() == false) {
+				gameStatus = GameStatus.USER_LOST;
+			} else {
+				gameStatus = GameStatus.IN_PROGRESS;
+			}
+		}
+		return gameStatus;
+	}
+	/**
+	 * checks the cell ArrayList to see if any cell as the winning value
+	 * @return true if a cell has the winning value and false if no cells have the winning value
+	 */
+	public boolean hasWinningValue () {
+		for (int i = 0; i < getNonEmptyTiles().size(); i++) {
+			if (getNonEmptyTiles().get(i).getValue() == winningVal) {
+				return true;
+			} 
+		}
+		return false;
 	}
 
 	@Override
