@@ -17,7 +17,7 @@ public class TenTwentyFourTester {
 	private static int NROWS, NCOLS;
 
 	@BeforeClass
-	public static void globalSetup()
+	public static void globalSetup() 
 	{
 		System.out.println ("Setting up Unit Testing");
 		gen = new Random();

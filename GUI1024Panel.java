@@ -22,7 +22,7 @@ public class GUI1024Panel extends JPanel {
 		// Use helper function to initialize game
 		// This lets us reuse the function to allow the user to
 		// change the board size or goal
-		initializeGame();
+		initializeGame(); 
 	}
 
 	private void initializeGame() {
@@ -140,7 +140,7 @@ public class GUI1024Panel extends JPanel {
 		nRows = 4;
 		nCols = 4;
 		gameLogic = new NumberGameArrayList(); 
-		gameLogic.resizeBoard(nRows, nCols, 16); 
+		gameLogic.resizeBoard(nRows, nCols, 512); 
 
 		// Update the GUI
 		// Start with changing the panel size and creating a new

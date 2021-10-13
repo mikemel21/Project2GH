@@ -3,11 +3,9 @@ package Project2;
 
 import java.util.Scanner;
 
-import javax.swing.JOptionPane;
-
 public class TextUI {
     private NumberSlider game;
-    private int[][] grid; 
+    private int[][] grid;  
     private static int CELL_WIDTH = 3;
     private static String NUM_FORMAT, BLANK_FORMAT; 
     private Scanner inp; 
@@ -89,9 +87,44 @@ public class TextUI {
         //        Get user input and slide up, down, left, right
         //        renderBoard
         // =========================================================================
-        
-        //MAKE IT A FOR LOOP
-        
+        boolean hasMoved = false;
+        boolean hasQuit = false;
+        while (hasQuit == false) {
+	        switch(inp.next()) {
+	        case "w":
+	        	hasMoved = game.slide(SlideDirection.UP);
+	        	break;
+	        case "a":
+	        	hasMoved = game.slide(SlideDirection.LEFT);
+	        	break;
+	        case "s":
+	        	hasMoved = game.slide(SlideDirection.DOWN);
+	        	break;
+	        case "d":
+	        	hasMoved = game.slide(SlideDirection.RIGHT);	
+	        	break;
+	        case "q":
+	        	hasQuit = true;
+	        	System.out.println("Thanks for Playing!");
+	        	System.exit(0);
+	        	break;
+	        case "u":
+	        	game.undo();
+	        	break;
+		    }
+	        
+	        if (hasMoved == true) {
+	        	renderBoard();
+	        	game.getStatus();
+	        	if (game.getStatus() == GameStatus.USER_WON) {
+	        		System.out.println("YOU WON!");
+	        		System.exit(0);
+	        	} else if (game.getStatus() == GameStatus.USER_LOST) {
+	        		System.out.println("You Lost!");
+	        		System.exit(0);
+	        	} 
+	        }
+        }
     }
 
     public static void main(String[] arg) {
