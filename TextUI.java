@@ -1,6 +1,9 @@
 package Project2;
 
+
 import java.util.Scanner;
+
+import javax.swing.JOptionPane;
 
 public class TextUI {
     private NumberSlider game;
@@ -40,7 +43,16 @@ public class TextUI {
         // TODO
         /* fill in the 2D array using information for non-empty tiles */
         // =========================================================================
-
+        for (int i = 0; i < game.getNonEmptyTiles().size(); i++) {
+        	for (int r = 0; r < grid.length; r++) {
+        		for (int c = 0; c < grid[r].length; c++) {
+        			if (game.getNonEmptyTiles().get(i).getRow() == r && game.getNonEmptyTiles().get(i).getColumn() == c) {
+        				grid[r][c] = game.getNonEmptyTiles().get(i).getValue();
+        			}
+        		}
+        	}
+        }
+        
         /* Print the 2D array using dots and numbers */
         for (int k = 0; k < grid.length; k++) {
             for (int m = 0; m < grid[k].length; m++)
@@ -62,7 +74,7 @@ public class TextUI {
         /* Place the first two random tiles */
         game.placeRandomValue();
         game.placeRandomValue();
-        renderBoard();
+    	renderBoard();
 
         /* To keep the right margin within 75 columns, we split the
            following long string literal into two lines
@@ -77,21 +89,9 @@ public class TextUI {
         //        Get user input and slide up, down, left, right
         //        renderBoard
         // =========================================================================
-
-
-        /* Almost done.... */
-        switch (game.getStatus()) {
-            case IN_PROGRESS:
-                System.out.println ("Thanks for playing!");
-                break;
-            case USER_WON:
-                System.out.println ("Congratulation!");
-                break;
-            case USER_LOST:
-                System.out.println ("Sorry....!");
-                break;
-
-        }
+        
+        //MAKE IT A FOR LOOP
+        
     }
 
     public static void main(String[] arg) {

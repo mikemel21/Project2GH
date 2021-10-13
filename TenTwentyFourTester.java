@@ -522,10 +522,10 @@ public class TenTwentyFourTester {
 			gameLogic.setValues(fillColumns(pat, valMap));
 			assertEquals("Non-full board: movePossible() should be true",
 					GameStatus.IN_PROGRESS,
-					gameLogic.getStatus());
+					gameLogic.getStatus()); 
 			gameLogic.setValues(fillRows(pat, valMap));
 			assertEquals("Non-full board: isGameOver() should be true",
-					GameStatus.IN_PROGRESS,
+					GameStatus.IN_PROGRESS, 
 					gameLogic.getStatus());
 		}
 	}

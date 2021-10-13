@@ -9,6 +9,7 @@ import Project2.Cell;
 public class NumberGameArrayList implements NumberSlider {
 
 	// instance variables:
+	
 	private int numRows, numCols, winningVal;
 	private ArrayList<Cell> cells;
 	private ArrayList< ArrayList<Cell> > boardStates = new ArrayList< ArrayList<Cell> >();
@@ -139,15 +140,21 @@ public class NumberGameArrayList implements NumberSlider {
 			if (hasWinningValue() == true) {
 				gameStatus = GameStatus.USER_WON;
 			} 
+			
 			// then checks if all tiles have a nonzero value and if the winning value ISNT on the board
-			else if (getNonEmptyTiles().size() == cells.size() && hasWinningValue() == false) {
+			if (getNonEmptyTiles().size() == cells.size() && hasWinningValue() == false) {
 				gameStatus = GameStatus.USER_LOST;
-			} else {
+			}
+			
+			// check for movePossible() checks if board is not full and the winning value is not on board
+			if (getNonEmptyTiles().size() < cells.size() && hasWinningValue() == false) {
 				gameStatus = GameStatus.IN_PROGRESS;
 			}
 		}
+		
 		return gameStatus;
 	}
+	
 	/**
 	 * checks the cell ArrayList to see if any cell as the winning value
 	 * @return true if a cell has the winning value and false if no cells have the winning value
@@ -204,7 +211,7 @@ public class NumberGameArrayList implements NumberSlider {
 	
 	/**
 	 *
-	 * @return an arraylist of Cells. Each cell holds the (row,column) and
+	 * @return an arrayList of Cells. Each cell holds the (row,column) and
 	 * value of an empty tile
 	 */
 	private ArrayList<Cell> getEmptyTiles(){
@@ -380,7 +387,7 @@ public class NumberGameArrayList implements NumberSlider {
 							getCellAt(row - i, col).setValue(getCellAt(row - i + 1, col).getValue());
 						}
 						else {
-							break;
+							break; 
 						}
 						getCellAt(row - i + 1, col).setValue(0);
 						moved = true;

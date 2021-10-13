@@ -163,7 +163,7 @@ public class GUI1024Panel extends JPanel {
 				gameBoardUI[k][m].setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
 				gameBoardUI[k][m].setPreferredSize(new Dimension(100, 100));
 				gameBoardUI[k][m].setMinimumSize(new Dimension(100, 100));
-
+				
 				//						c.fill = GridBagConstraints.HORIZONTAL;
 				// Indicate which column 
 				c.gridx = m;
