@@ -1,4 +1,4 @@
-package Project2;
+package project2;
 
 public enum GameStatus {
     IN_PROGRESS, /* game is still in progress */

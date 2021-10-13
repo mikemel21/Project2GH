@@ -1,10 +1,10 @@
-package Project2;
+package project2;
 
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
-import Project2.Cell;
+import project2.Cell;
 
 public class NumberGameArrayList implements NumberSlider {
 
@@ -12,7 +12,7 @@ public class NumberGameArrayList implements NumberSlider {
 	private int numRows, numCols, winningVal;
 	private ArrayList<Cell> cells;
 	private ArrayList< ArrayList<Cell> > boardStates = new ArrayList< ArrayList<Cell> >();
-	private GameStatus gameStatus = GameStatus.IN_PROGRESS;
+	private GameStatus gameStatus;
 	
 	public NumberGameArrayList () {
 		cells = new ArrayList<Cell>();
@@ -51,16 +51,13 @@ public class NumberGameArrayList implements NumberSlider {
 		//places 2 random values
 		placeRandomValue();
 		placeRandomValue();
+		gameStatus = GameStatus.IN_PROGRESS;
 		
 //		int[][] ref = {
-//				{4, 4, 8, 8, 0, 2, 2, 4},
-//				{2, 2, 0, 4, 2, 2, 0, 4},
-//				{2, 2, 2, 2, 2, 2, 2, 2},
-//				{2, 2, 2, 4, 2, 2, 2, 4},
-//				{2, 2, 2, 4, 2, 0, 0, 0},
-//				{2, 2, 0, 4, 0, 2, 2, 0},
-//				{2, 2, 8, 4, 2, 4, 2, 4},
-//				{2, 0, 2, 0, 2, 0, 4, 4},
+//				{8, 4, 2, 4,},
+//				{2, 2, 4, 2,},
+//				{4, 4, 2, 4,},
+//				{0, 2, 4, 2,}
 //				};
 //		setValues(ref);
 	}
@@ -134,27 +131,27 @@ public class NumberGameArrayList implements NumberSlider {
 
 	@Override
 	public GameStatus getStatus() {
-		for (int i = 0; i < cells.size(); i++) {
-			// checks if hasWinningValue() is true (if any cells have the winning value)
-			if (hasWinningValue() == true) {
-				gameStatus = GameStatus.USER_WON;
-			} 
-			// then checks if all tiles have a nonzero value and if the winning value ISNT on the board
-			else if (getNonEmptyTiles().size() == cells.size() && hasWinningValue() == false) {
-				gameStatus = GameStatus.USER_LOST;
-			} else {
-				gameStatus = GameStatus.IN_PROGRESS;
-			}
+		// checks if hasWinningValue() is true (if any cells have the winning value)
+		if (hasWinningValue()) {
+			gameStatus = GameStatus.USER_WON;
+		} 
+		// then checks if all tiles have a nonzero value and if the winning value ISNT on the board
+		else if (!movePossible()) {
+			gameStatus = GameStatus.USER_LOST;
+		}
+		else {
+			gameStatus = GameStatus.IN_PROGRESS;
 		}
 		return gameStatus;
 	}
+	
 	/**
 	 * checks the cell ArrayList to see if any cell as the winning value
 	 * @return true if a cell has the winning value and false if no cells have the winning value
 	 */
 	public boolean hasWinningValue () {
 		for (int i = 0; i < getNonEmptyTiles().size(); i++) {
-			if (getNonEmptyTiles().get(i).getValue() == winningVal) {
+			if (getNonEmptyTiles().get(i).getValue() >= winningVal) {
 				return true;
 			} 
 		}
@@ -169,6 +166,37 @@ public class NumberGameArrayList implements NumberSlider {
 		else {
 			cells = boardStates.remove(boardStates.size() - 1);
 		}
+	}
+	
+	private boolean movePossible() {
+		if(horizontalMergePossible() || verticleMergePossible()) {
+			return true;
+		}
+		else{
+			return !(getNonEmptyTiles().size() == cells.size());
+		}
+	}
+	
+	private boolean horizontalMergePossible() {
+		for(int row = 0; row < numRows; row++) {
+			for(int col = 0; col < numCols - 1; col++) {
+				if(getCellAt(row, col).getValue() == getCellAt(row, col + 1).getValue()) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	private boolean verticleMergePossible() {
+		for(int col = 0; col < numCols; col++) {
+			for(int row = 0; row < numRows - 1; row++) {
+				if(getCellAt(row, col).getValue() == getCellAt(row + 1, col).getValue()) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	
 	/**
