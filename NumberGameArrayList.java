@@ -12,10 +12,21 @@ public class NumberGameArrayList implements NumberSlider {
 	/**
 	 * holds values for rows, columns, and winning value
 	 */
-	private int numRows, numCols, winningVal;
+	private int numRows, numCols;
+	public int winningVal;
+	
+	/**
+	 * stores the highest tile value of current game
+	 */
+	public int currentScore;
+	/**
+	 * stores the overall highscore of game session
+	 */
+	public int highScore = 0;
+	
 	/**
 	 * ArrayList for all cells on the board
-	 */
+	 */ 
 	private ArrayList<Cell> cells;
 	/**
 	 * ArrayList that holds the different states of the board
@@ -25,6 +36,7 @@ public class NumberGameArrayList implements NumberSlider {
 	
 	public NumberGameArrayList () {
 		cells = new ArrayList<Cell>();
+		currentScore = 0;
 	}
 	
 //	private void setGameStatus(GameStatus gameStatus) {
@@ -426,5 +438,29 @@ public class NumberGameArrayList implements NumberSlider {
 			}
 		}
 		return moved;
+	}
+	
+	/**
+	 * goes through nonEmptyTiles() to find the highest tile value
+	 * @return the highest tile value of current game
+	 */
+	public int getCurrentScore() {
+		int cs = 0;
+		
+		for (int i = 0; i < getNonEmptyTiles().size(); i++) {
+			for (int j = i + 1; j < getNonEmptyTiles().size(); j++) {
+				if (getNonEmptyTiles().get(i).getValue() > getNonEmptyTiles().get(j).getValue()) {
+					cs = getNonEmptyTiles().get(i).getValue();
+				} else {
+					cs = getNonEmptyTiles().get(i).getValue();
+				}
+				
+				if (cs > highScore) {
+					highScore = cs;
+				}
+			}
+		}
+		
+		return cs;
 	}
 }

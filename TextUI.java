@@ -77,7 +77,7 @@ public class TextUI {
         /* To keep the right margin within 75 columns, we split the
            following long string literal into two lines
          */
-        System.out.print ("Slide direction (W, S, Z, A), " +
+        System.out.print ("Slide direction (W, S, D, A), " +
                 "[U]ndo or [Q]uit? ");
 
 
@@ -109,7 +109,11 @@ public class TextUI {
 	        	System.exit(0);
 	        	break;
 	        case "u":
-	        	game.undo();
+	        	try {
+	        		game.undo();
+	        	} catch (IllegalStateException e) {
+	        		System.out.println("You cannot undo past the first move!");
+	        	}
 	        	break;
 		    }
 	        
