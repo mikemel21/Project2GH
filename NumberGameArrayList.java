@@ -1,6 +1,7 @@
 package Project2;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -12,9 +13,16 @@ public class NumberGameArrayList implements NumberSlider {
 	/**
 	 * holds values for rows, columns, and winning value
 	 */
-	private int numRows, numCols;
-	public int winningVal;
+	private int numRows, numCols, winningVal;
 	
+	public int getWinningVal() {
+		return winningVal;
+	}
+
+	public void setWinningVal(int winningVal) {
+		this.winningVal = winningVal;
+	}
+
 	/**
 	 * stores the highest tile value of current game
 	 */
@@ -445,22 +453,18 @@ public class NumberGameArrayList implements NumberSlider {
 	 * @return the highest tile value of current game
 	 */
 	public int getCurrentScore() {
-		int cs = 0;
-		
-		for (int i = 0; i < getNonEmptyTiles().size(); i++) {
-			for (int j = i + 1; j < getNonEmptyTiles().size(); j++) {
-				if (getNonEmptyTiles().get(i).getValue() > getNonEmptyTiles().get(j).getValue()) {
-					cs = getNonEmptyTiles().get(i).getValue();
-				} else {
-					cs = getNonEmptyTiles().get(i).getValue();
-				}
-				
-				if (cs > highScore) {
-					highScore = cs;
-				}
-			}
-		}
-		
-		return cs;
+		int highestIndex = 0;
+	    int highest = getNonEmptyTiles().get(0).getValue();
+
+	    for (int s = 1; s < getNonEmptyTiles().size(); s++){
+	        int curValue = getNonEmptyTiles().get(s).getValue();
+	        if (curValue > highest) {
+	            highest = curValue;
+	            highestIndex = s;
+	        }
+	    }
+	    System.out.println(highest);
+		return highest;
 	}
+
 }

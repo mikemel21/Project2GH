@@ -19,25 +19,37 @@ public class GUI1024Panel extends JPanel {
 	
 	private JMenu options;
 	private JMenu statistics;
-	public JLabel curScore;
 	public JMenuBar mb;
+	
+	public JLabel curScore = new JLabel();
+	public JLabel highScore = new JLabel("High Score: ");
+	public JLabel sessionsPlayed = new JLabel ("Games Played: ");
 	
 	// Options: JMenu Items
 	private JMenuItem reset;
 	private JMenuItem exit;
 	private JMenuItem changeGoalScore;
 	// private JMenuItem resizeTheBoard;
+	
+	public JPanel p;
+	
+	// set Board Size (FIX CANCEL OPTION)
+	public String boardsi = JOptionPane.showInputDialog("Input board size (ROWxCOL): ");
+	public String[] firstBoard = boardsi.split("x");
+	
+	private int highscore;
+	private int playedSessions;
 
 	public GUI1024Panel() { 
-
 		// Use helper function to initialize game
 		// This lets us reuse the function to allow the user to
 		// change the board size or goal
-		initializeGame(); 
+		initializeGame();
+		LabelPanel();
 	}
-	
 
 	private void initializeGame() {
+		
 		// Initialize GridBagLayoutConstraints
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
@@ -46,30 +58,28 @@ public class GUI1024Panel extends JPanel {
 		// Indicate which row
 		c.gridy = 0;
 		// Indicate number of columns to span
-		//				c.gridwidth = 1;
+		//c.gridwidth = 1;
 		// Specify custom height
-		//				c.ipady = 40;
-
+		//c.ipady = 40;
+		
 		// Initialize the game board appearance
 		setBorder(BorderFactory.createLineBorder(Color.ORANGE));
 		setLayout(new GridBagLayout());
 		playPanel = new JPanel();
 		playPanel.setLayout(new GridBagLayout());
 		add(playPanel);
-		
 		// Initialize the game panel
 		gamePanel = new JPanel();
-		playPanel.add(gamePanel, c); 
-		
+		playPanel.add(gamePanel, c); 	
 		
 		// Allow keys to be pressed to control the game
 		setFocusable(true);
 		addKeyListener(new SlideListener());
-		 
+		
 		// Initialize the game GUI and logic
 		resizeBoard();
+		//gameLogic.resizeBoard(Integer.parseInt(firstBoard[0]), Integer.parseInt(firstBoard[1]), 512);
 		
-
 		// Initialize Menu
 		mb = new JMenuBar();
 		options = new JMenu("Options");
@@ -97,13 +107,46 @@ public class GUI1024Panel extends JPanel {
 			}});
 		changeGoalScore.addActionListener(new ActionListener() {
 			public void actionPerformed (ActionEvent e) {
-				JOptionPane.showMessageDialog(null, "test");
-				//gameLogic.winningVal;
+				String newValue = JOptionPane.showInputDialog(null, "Enter new goal: ");
+				gameLogic.setWinningVal(Integer.parseInt(newValue));
 				updateBoard();
 			}});
 	}
+	
+	public void LabelPanel() {
+		// Initialize GridBagLayoutConstraints
+		GridBagConstraints c = new GridBagConstraints();
+		c.fill = GridBagConstraints.HORIZONTAL;
+		// Indicate which column
+		c.gridx = 0; 
+		// Indicate which row
+		c.gridy = 0;
+		
+		// Initialize the game board appearance
+		setLayout(new GridBagLayout());
+		p = new JPanel();
+		p.setLayout(new GridBagLayout());
+		add(p);
+		
+		c.gridx = 0;
+		c.gridy = 1;
+		p.add(curScore, c);
+
+		c.gridx = 0;
+		c.gridy = 2;
+		highScore.setText("high score: " + highscore);
+		p.add(highScore, c);
+		
+		c.gridx = 0;
+		c.gridy = 3;
+		sessionsPlayed.setText("high score: " + playedSessions);
+		p.add(sessionsPlayed);
+	}
+	
 
 	private void updateBoard() {
+		curScore.setText("current score: " + gameLogic.currentScore);
+		
 		for (JLabel[] row : gameBoardUI)
 			for (JLabel s : row) {
 				s.setText("");
@@ -143,8 +186,6 @@ public class GUI1024Panel extends JPanel {
 				z.setForeground(Color.YELLOW.darker());
 			} 
 			//z.setForeground(c.getValue() > 0 ? Color.BLACK : Color.RED);
-			
-			
 		}
 	}
 
@@ -180,6 +221,7 @@ public class GUI1024Panel extends JPanel {
 				}
 			}
 			if (moved) {
+				gameLogic.currentScore = gameLogic.getCurrentScore();
 				updateBoard();
 				if (gameLogic.getStatus().equals(GameStatus.USER_WON))
 					JOptionPane.showMessageDialog(null, "You won");
@@ -187,11 +229,16 @@ public class GUI1024Panel extends JPanel {
 					int resp = JOptionPane.showConfirmDialog(null, "Do you want to play again?", "TentOnly Over!",
 							JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 					if (resp == JOptionPane.YES_OPTION) {
+						playedSessions += 1;
 						gameLogic.reset();
 						updateBoard();
 					} else {
 						System.exit(0);
 					}
+				}
+				// sets highscore
+				if (gameLogic.getCurrentScore() > highscore) {
+					highscore = gameLogic.getCurrentScore();
 				}
 			}
 		}
@@ -208,8 +255,8 @@ public class GUI1024Panel extends JPanel {
 	public void resizeBoard() {
 
 		// Initialize the game logic
-		nRows = 4;
-		nCols = 4;
+		nRows = Integer.parseInt(firstBoard[0]);
+		nCols = Integer.parseInt(firstBoard[1]);
 		gameLogic = new NumberGameArrayList(); 
 		gameLogic.resizeBoard(nRows, nCols, 512); 
 
