@@ -18,11 +18,10 @@ public class GUI1024Panel extends JPanel {
 	private JPanel playPanel, gamePanel;
 	
 	private JMenu options;
-	private JMenu statistics;
 	public JMenuBar mb;
 	
 	public JLabel curScore = new JLabel();
-	public JLabel highScore = new JLabel("High Score: ");
+	public JLabel highScore = new JLabel();
 	public JLabel sessionsPlayed = new JLabel ("Games Played: ");
 	
 	// Options: JMenu Items
@@ -34,8 +33,8 @@ public class GUI1024Panel extends JPanel {
 	public JPanel p;
 	
 	// set Board Size (FIX CANCEL OPTION)
-	public String boardsi = JOptionPane.showInputDialog("Input board size (ROWxCOL): ");
-	public String[] firstBoard = boardsi.split("x");
+	private String boardsi;
+	private String[] firstBoard;
 	
 	private int highscore;
 	private int playedSessions;
@@ -49,7 +48,7 @@ public class GUI1024Panel extends JPanel {
 	}
 
 	private void initializeGame() {
-		
+		boardsi = JOptionPane.showInputDialog(null, "Choose values for rows and columns (ROWxCOL): ");
 		// Initialize GridBagLayoutConstraints
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
@@ -78,6 +77,7 @@ public class GUI1024Panel extends JPanel {
 		
 		// Initialize the game GUI and logic
 		resizeBoard();
+		
 		//gameLogic.resizeBoard(Integer.parseInt(firstBoard[0]), Integer.parseInt(firstBoard[1]), 512);
 		
 		// Initialize Menu
@@ -87,15 +87,12 @@ public class GUI1024Panel extends JPanel {
 		exit = new JMenuItem ("Exit");
 		changeGoalScore = new JMenuItem("Change your goal score");
 		
-		statistics = new JMenu("Statistics");
-		
 		options.add(reset);
 		
 		options.add(changeGoalScore);
 		options.add(exit);
 		
 		mb.add(options);
-		mb.add(statistics);
 		reset.addActionListener(new ActionListener() {
 			public void actionPerformed (ActionEvent e) {
 				gameLogic.reset();
@@ -108,9 +105,17 @@ public class GUI1024Panel extends JPanel {
 		changeGoalScore.addActionListener(new ActionListener() {
 			public void actionPerformed (ActionEvent e) {
 				String newValue = JOptionPane.showInputDialog(null, "Enter new goal: ");
-				gameLogic.setWinningVal(Integer.parseInt(newValue));
+				try {
+					gameLogic.setWinningVal(Integer.parseInt(newValue));
+				} catch (NumberFormatException a) {
+					JOptionPane.showMessageDialog(null, "Value must be a whole number! Please try again.");
+				} catch (IllegalArgumentException b) {
+					JOptionPane.showMessageDialog(null, "Value must be positive! Please try again.");
+				}
 				updateBoard();
 			}});
+		
+		
 	}
 	
 	public void LabelPanel() {
@@ -130,26 +135,34 @@ public class GUI1024Panel extends JPanel {
 		
 		c.gridx = 0;
 		c.gridy = 1;
+		curScore.setText("current score: ");
 		p.add(curScore, c);
 
 		c.gridx = 0;
 		c.gridy = 2;
-		highScore.setText("high score: " + highscore);
+		highScore.setText("high score: ");
 		p.add(highScore, c);
 		
+		
 		c.gridx = 0;
-		c.gridy = 3;
-		sessionsPlayed.setText("high score: " + playedSessions);
+		c.gridy = 2;
 		p.add(sessionsPlayed);
 	}
 	
 
 	private void updateBoard() {
-		curScore.setText("current score: " + gameLogic.currentScore);
+		curScore.setText("current score: " + gameLogic.getCurrentScore());
+		if (highscore < gameLogic.getCurrentScore()) {
+			highscore = gameLogic.getCurrentScore();
+		} 
+		highScore.setText("high score: " + highscore);
+		sessionsPlayed.setText("Sessions played: " + playedSessions);
 		
 		for (JLabel[] row : gameBoardUI)
 			for (JLabel s : row) {
 				s.setText("");
+				s.setBackground(Color.GRAY);
+				s.setOpaque(true);
 			}
 
 		ArrayList<Cell> out = gameLogic.getNonEmptyTiles();
@@ -161,31 +174,9 @@ public class GUI1024Panel extends JPanel {
 			JLabel z = gameBoardUI[c.getRow()][c.getColumn()];
 			z.setText(String.valueOf(Math.abs(c.getValue())));
 			
-			// BASIC: change color of text based on value
-			if (c.getValue() == 2) {
-				z.setForeground(Color.GRAY);
-			} else if (c.getValue() == 4) {
-				z.setForeground(Color.DARK_GRAY);
-			} else if (c.getValue() == 8) {
-				z.setForeground(Color.ORANGE);
-			} else if (c.getValue() == 16) {
-				z.setForeground(Color.ORANGE.darker());
-			} else if (c.getValue() == 32) {
-				z.setForeground(Color.RED);
-			} else if (c.getValue() == 64) {
-				z.setForeground(Color.RED.darker());
-			} else if (c.getValue() == 128) {
-				z.setForeground(Color.RED.darker().darker());
-			} else if (c.getValue() == 256) {
-				z.setForeground(Color.BLUE);
-			} else if (c.getValue() == 512) {
-				z.setForeground(Color.MAGENTA);
-			} else if (c.getValue() == 1024) {
-				z.setForeground(Color.YELLOW);
-			} else if (c.getValue() >= 2048) {
-				z.setForeground(Color.YELLOW.darker());
-			} 
-			//z.setForeground(c.getValue() > 0 ? Color.BLACK : Color.RED);
+			// changing tile colors based on value (Dynamic implementation)
+			int green = -255/gameLogic.getWinningVal()*c.getValue() + 255;
+			z.setBackground(new Color(255, (int) green, 0));
 		}
 	}
 
@@ -195,7 +186,6 @@ public class GUI1024Panel extends JPanel {
 
 		@Override
 		public void keyPressed(KeyEvent e) {
-
 			boolean moved = false;
 			switch (e.getKeyCode()) {
 			case KeyEvent.VK_UP:
@@ -223,23 +213,31 @@ public class GUI1024Panel extends JPanel {
 			if (moved) {
 				gameLogic.currentScore = gameLogic.getCurrentScore();
 				updateBoard();
-				if (gameLogic.getStatus().equals(GameStatus.USER_WON))
+				
+				if (gameLogic.getStatus().equals(GameStatus.USER_WON)) {
 					JOptionPane.showMessageDialog(null, "You won");
-				else if (gameLogic.getStatus().equals(GameStatus.USER_LOST)) {
-					int resp = JOptionPane.showConfirmDialog(null, "Do you want to play again?", "TentOnly Over!",
+					int resp = JOptionPane.showConfirmDialog(null, "Do you want to play again?", "YOU WON",
 							JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 					if (resp == JOptionPane.YES_OPTION) {
-						playedSessions += 1;
 						gameLogic.reset();
+						playedSessions += 1;
+						gameLogic.currentScore = 0;
 						updateBoard();
 					} else {
 						System.exit(0);
 					}
-				}
-				// sets highscore
-				if (gameLogic.getCurrentScore() > highscore) {
-					highscore = gameLogic.getCurrentScore();
-				}
+				} else if (gameLogic.getStatus().equals(GameStatus.USER_LOST)) {
+					int resp = JOptionPane.showConfirmDialog(null, "Do you want to play again?", "TentOnly Over!",
+							JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+					if (resp == JOptionPane.YES_OPTION) {
+						gameLogic.reset();
+						playedSessions += 1;
+						gameLogic.currentScore = 0;
+						updateBoard();
+					} else {
+						System.exit(0);
+					}
+				} 
 			}
 		}
 
@@ -248,17 +246,18 @@ public class GUI1024Panel extends JPanel {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			
 		}
 	}
 
 	public void resizeBoard() {
-
+		
 		// Initialize the game logic
-		nRows = Integer.parseInt(firstBoard[0]);
-		nCols = Integer.parseInt(firstBoard[1]);
+		nRows = Integer.parseInt(boardsi.split("x")[0]);
+		nCols = Integer.parseInt(boardsi.split("x")[1]);
+
 		gameLogic = new NumberGameArrayList(); 
-		gameLogic.resizeBoard(nRows, nCols, 512); 
+		gameLogic.currentScore = 0;
+		gameLogic.resizeBoard(nRows, nCols, 16); 
 
 		// Update the GUI
 		// Start with changing the panel size and creating a new

@@ -30,7 +30,7 @@ public class NumberGameArrayList implements NumberSlider {
 	/**
 	 * stores the overall highscore of game session
 	 */
-	public int highScore = 0;
+	int highScore;
 	
 	/**
 	 * ArrayList for all cells on the board
@@ -463,8 +463,21 @@ public class NumberGameArrayList implements NumberSlider {
 	            highestIndex = s;
 	        }
 	    }
-	    System.out.println(highest);
 		return highest;
 	}
 
+	
+	/**
+	 * checks if the current score is greater than the highscore.
+	 * If the current score is > highscore, change the highscore to the current score
+	 * 
+	 * @return highscore value
+	 */
+	public int getHighScore() {
+		if (highScore < getCurrentScore()) {
+			return getCurrentScore();
+		} else {
+			return highScore;
+		}
+	}
 }
