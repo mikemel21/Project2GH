@@ -15,10 +15,10 @@ public class NumberGameArrayList implements NumberSlider {
 
 	/** current number of rows of the board */
 	private int numRows;
-	
+
 	/** current number of column of the board */
 	private int numCols;
-	
+
 	/** current value required to win */
 	private int winningVal;
 
@@ -27,7 +27,7 @@ public class NumberGameArrayList implements NumberSlider {
 
 	/** ArrayList that holds the different states of the board */
 	private ArrayList< ArrayList<Cell> > boardStates = new ArrayList< ArrayList<Cell> >();
-	
+
 	/** the status of the game described as a GameStatus enum */
 	private GameStatus gameStatus;
 
@@ -191,13 +191,13 @@ public class NumberGameArrayList implements NumberSlider {
 	 */
 	@Override
 	public GameStatus getStatus() {
-		
+
 		// checks if hasWinningValue() is true (if any cells have the winning value)
 		if (hasWinningValue()) {
 			gameStatus = GameStatus.USER_WON;
 		} 
-		
-		// then checks if all tiles have a nonzero value and if the winning value ISNT on the board
+
+		// then checks if a move is possible on the board
 		else if (!movePossible()) {
 			gameStatus = GameStatus.USER_LOST;
 		}
