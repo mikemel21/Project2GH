@@ -35,7 +35,7 @@ public class GUI1024Panel extends JPanel {
 	public JPanel p;
 
 	private String boardSize;
-	private int winningVal = 2048;
+	private int winningVal = 1024;
 	private int highScore = 0;
 	private int playedSessions = 0;
 	private int numSlides = 0;
