@@ -40,7 +40,6 @@ public class GUI1024Panel extends JPanel {
 	private int playedSessions = 0;
 	private int numSlides = 0;
 	private int numWins = 0;
-	
 
 	public GUI1024Panel() { 
 		// Use helper function to initialize game
@@ -59,7 +58,7 @@ public class GUI1024Panel extends JPanel {
 			JOptionPane.showMessageDialog(null, "Please enter a valid board size. Please try again.");
 			boardSize = JOptionPane.showInputDialog(null, "Choose values for rows and columns (ROWxCOL): ");
 		}
-		
+
 		// Initialize GridBagLayoutConstraints
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
@@ -97,7 +96,7 @@ public class GUI1024Panel extends JPanel {
 		exitItem = new JMenuItem ("Exit");
 		changeGoalScoreItem = new JMenuItem("Change your goal score");
 		changeBoardSizeItem = new JMenuItem("Change your board size");
-		
+
 		options.add(resetItem);
 		options.add(changeGoalScoreItem);
 		options.add(changeBoardSizeItem);
@@ -193,11 +192,11 @@ public class GUI1024Panel extends JPanel {
 		c.gridx = 0;
 		c.gridy = 3;
 		p.add(sessionsPlayedLabel, c);
-		
+
 		c.gridx = 0;
 		c.gridy = 4;
 		p.add(numSlidesLabel, c);
-		
+
 		c.gridx = 0;
 		c.gridy = 5;
 		p.add(numWinsLabel, c);
@@ -229,7 +228,7 @@ public class GUI1024Panel extends JPanel {
 		for (Cell c : out) { 
 			JLabel z = gameBoardUI[c.getRow()][c.getColumn()];
 			z.setText(String.valueOf(Math.abs(c.getValue())));
-			
+
 			// changing tile colors based on value (Dynamic implementation)
 			int green = (int)(-256.0 / winningVal * c.getValue() + 256);
 			z.setBackground(new Color(255, green, 0));
@@ -297,7 +296,7 @@ public class GUI1024Panel extends JPanel {
 
 		@Override
 		public void keyReleased(KeyEvent e) {
-			
+
 		}
 
 		@Override
@@ -306,17 +305,12 @@ public class GUI1024Panel extends JPanel {
 	}
 
 	public void resizeBoard() {
-		
+
 		// Initialize the game logic
 		nRows = Integer.parseInt(boardSize.split("x")[0]);
 		nCols = Integer.parseInt(boardSize.split("x")[1]);
 
 		gameLogic = new NumberGameArrayList();
-		
-		//checks if winningVal has been changed, used for changing board size while keeping old winningVal
-//		if(winningVal != 0) {
-//			gameLogic.setWinningVal(winningVal);
-//		}
 		gameLogic.resizeBoard(nRows, nCols, winningVal); 
 
 		// Update the GUI
@@ -357,7 +351,7 @@ public class GUI1024Panel extends JPanel {
 		gameLogic.reset();
 		updateBoard();
 	}
-	
+
 	private boolean isValidBoardSize(String boardSize) {
 		if(boardSize == null) return false;
 		if(boardSize.split("x").length == 2) {
@@ -374,16 +368,16 @@ public class GUI1024Panel extends JPanel {
 		}
 		return false;
 	}
-	
+
 	private int getCurrentScore() {
 		int highest = 0;
 
-	    for (int s = 0; s < gameLogic.getNonEmptyTiles().size(); s++){
-	        int curValue = gameLogic.getNonEmptyTiles().get(s).getValue();
-	        if (curValue > highest) {
-	            highest = curValue;
-	        }
-	    }
+		for (int s = 0; s < gameLogic.getNonEmptyTiles().size(); s++){
+			int curValue = gameLogic.getNonEmptyTiles().get(s).getValue();
+			if (curValue > highest) {
+				highest = curValue;
+			}
+		}
 		return highest;
 	}
 }
