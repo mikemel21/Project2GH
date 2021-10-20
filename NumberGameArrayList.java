@@ -267,7 +267,7 @@ public class NumberGameArrayList implements NumberSlider {
 	 * @return true if a move is possible, false otherwise
 	 */
 	private boolean movePossible() {
-		if(horizontalMergePossible() || verticleMergePossible()) {
+		if(horizontalMergePossible() || verticalMergePossible()) {
 			return true;
 		}
 		else{
@@ -301,9 +301,9 @@ public class NumberGameArrayList implements NumberSlider {
 	 *same as the cell directly above. This is a helper method
 	 *for the getStatus method
 	 * 
-	 * @return true if verticle merge is possible
+	 * @return true if vertical merge is possible
 	 */
-	private boolean verticleMergePossible() {
+	private boolean verticalMergePossible() {
 		for(int col = 0; col < numCols; col++) {
 			for(int row = 0; row < numRows - 1; row++) {
 				if(getCellAt(row, col).getValue() == 
