@@ -54,6 +54,7 @@ public class GUI1024Panel extends JPanel {
 			JOptionPane.showMessageDialog(null, "Please enter a valid board size. Please try again.");
 			boardSize = JOptionPane.showInputDialog(null, "Choose values for rows and columns (ROWxCOL): ");
 		}
+		
 		// Initialize GridBagLayoutConstraints
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
@@ -82,7 +83,6 @@ public class GUI1024Panel extends JPanel {
 
 		// Initialize the game GUI and logic
 		resizeBoard();
-
 		//gameLogic.resizeBoard(Integer.parseInt(firstBoard[0]), Integer.parseInt(firstBoard[1]), 512);
 
 		// Initialize Menu
@@ -92,9 +92,8 @@ public class GUI1024Panel extends JPanel {
 		exit = new JMenuItem ("Exit");
 		changeGoalScore = new JMenuItem("Change your goal score");
 		changeBoardSize = new JMenuItem("Change your board size");
-
+		
 		options.add(reset);
-
 		options.add(changeGoalScore);
 		options.add(changeBoardSize);
 		options.add(exit);
@@ -157,8 +156,6 @@ public class GUI1024Panel extends JPanel {
 				resizeBoard();
 			}
 		});
-
-
 	}
 
 	public void LabelPanel() {
@@ -183,7 +180,6 @@ public class GUI1024Panel extends JPanel {
 		c.gridx = 0;
 		c.gridy = 2;
 		p.add(highScore, c);
-
 
 		c.gridx = 0;
 		c.gridy = 2;
@@ -214,7 +210,7 @@ public class GUI1024Panel extends JPanel {
 		for (Cell c : out) { 
 			JLabel z = gameBoardUI[c.getRow()][c.getColumn()];
 			z.setText(String.valueOf(Math.abs(c.getValue())));
-
+			
 			// changing tile colors based on value (Dynamic implementation)
 			int green = (int)(-256.0/gameLogic.getWinningVal()*c.getValue() + 256);
 			z.setBackground(new Color(255, green, 0));
@@ -254,7 +250,6 @@ public class GUI1024Panel extends JPanel {
 			if (moved) {
 				gameLogic.currentScore = gameLogic.getCurrentScore();
 				updateBoard();
-
 				if (gameLogic.getStatus().equals(GameStatus.USER_WON)) {
 					JOptionPane.showMessageDialog(null, "You won");
 					int resp = JOptionPane.showConfirmDialog(null, "Do you want to play again?", "YOU WON",
@@ -287,7 +282,6 @@ public class GUI1024Panel extends JPanel {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			
 		}
 	}
 

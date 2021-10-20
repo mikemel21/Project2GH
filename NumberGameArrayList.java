@@ -21,7 +21,7 @@ public class NumberGameArrayList implements NumberSlider {
 	/**
 	 * stores the overall highscore of game session
 	 */
-	public int highScore = 0;
+	int highScore;
 	
 	/**
 	 * ArrayList for all cells on the board
