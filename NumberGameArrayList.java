@@ -14,16 +14,6 @@ public class NumberGameArrayList implements NumberSlider {
 	private int numRows, numCols, winningVal;
 	
 	/**
-	 * stores the highest tile value of current game
-	 */
-	public int currentScore;
-	
-	/**
-	 * stores the overall highscore of game session
-	 */
-	int highScore;
-	
-	/**
 	 * ArrayList for all cells on the board
 	 */ 
 	private ArrayList<Cell> cells;
@@ -37,51 +27,6 @@ public class NumberGameArrayList implements NumberSlider {
 	public NumberGameArrayList () {
 		cells = new ArrayList<Cell>();
 		winningVal = 2048;
-	}
-	
-	public int getWinningVal() {
-		return winningVal;
-	}
-
-	public void setWinningVal(int winningVal) {
-		if(!isPowerTwo(winningVal)) {
-			throw new IllegalArgumentException();
-		}
-		this.winningVal = winningVal;
-	}
-	
-	/**
-	 * goes through nonEmptyTiles() to find the highest tile value
-	 * @return the highest tile value of current game
-	 */
-	public int getCurrentScore() {
-//		int highestIndex = 0;
-//	    int highest = getNonEmptyTiles().get(0).getValue();
-		int highest = 0;
-
-	    for (int s = 0; s < getNonEmptyTiles().size(); s++){
-	        int curValue = getNonEmptyTiles().get(s).getValue();
-	        if (curValue > highest) {
-	            highest = curValue;
-//	            highestIndex = s;
-	        }
-	    }
-//	    System.out.println(highest);
-		return highest;
-	}
-	
-	/**
-	 * checks if the current score is greater than the highscore.
-	 * If the current score is > highscore, change the highscore to the current score
-	 * 
-	 * @return highscore value
-	 */
-	public int getHighScore() {
-		if (highScore < getCurrentScore()) {
-			return getCurrentScore();
-		} else {
-			return highScore;
-		}
 	}
 	
 	@Override
@@ -118,7 +63,7 @@ public class NumberGameArrayList implements NumberSlider {
 		placeRandomValue();
 		gameStatus = GameStatus.IN_PROGRESS;
 		boardStates.clear();
-		currentScore = getCurrentScore();
+//		currentScore = getCurrentScore();
 //		int[][] ref = {
 //				{8, 4, 2, 4,},
 //				{2, 2, 4, 2,},
@@ -288,7 +233,6 @@ public class NumberGameArrayList implements NumberSlider {
 		}
 		
 		int index = numCols * row + col;
-
 		return cells.get(index);
 	}
 

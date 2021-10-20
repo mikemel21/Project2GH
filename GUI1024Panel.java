@@ -18,27 +18,29 @@ public class GUI1024Panel extends JPanel {
 	private JPanel playPanel, gamePanel;
 
 	private JMenu options;
-	public JMenuBar mb;
+	public JMenuBar menuBar;
 
-	public JLabel curScore = new JLabel();
-	public JLabel highScore = new JLabel();
-	public JLabel sessionsPlayed = new JLabel();
+	public JLabel currentScoreLabel = new JLabel();
+	public JLabel highScoreLabel = new JLabel();
+	public JLabel sessionsPlayedLabel = new JLabel();
+	public JLabel numSlidesLabel = new JLabel();
+	public JLabel numWinsLabel = new JLabel();
 
 	// Options: JMenu Items
-	private JMenuItem reset;
-	private JMenuItem exit;
-	private JMenuItem changeGoalScore;
-	private JMenuItem changeBoardSize;
+	private JMenuItem resetItem;
+	private JMenuItem exitItem;
+	private JMenuItem changeGoalScoreItem;
+	private JMenuItem changeBoardSizeItem;
 
 	public JPanel p;
 
-	// set Board Size (FIX CANCEL OPTION)
 	private String boardSize;
-	private String[] firstBoard;
-	private int winningVal = 0;
-
-	private int highscore;
-	private int playedSessions;
+	private int winningVal = 2048;
+	private int highScore = 0;
+	private int playedSessions = 0;
+	private int numSlides = 0;
+	private int numWins = 0;
+	
 
 	public GUI1024Panel() { 
 		// Use helper function to initialize game
@@ -51,6 +53,9 @@ public class GUI1024Panel extends JPanel {
 	private void initializeGame() {
 		boardSize = JOptionPane.showInputDialog(null, "Choose values for rows and columns (ROWxCOL): ");
 		while(!isValidBoardSize(boardSize)) {
+			if(boardSize == null) {
+				System.exit(0);
+			}
 			JOptionPane.showMessageDialog(null, "Please enter a valid board size. Please try again.");
 			boardSize = JOptionPane.showInputDialog(null, "Choose values for rows and columns (ROWxCOL): ");
 		}
@@ -86,36 +91,40 @@ public class GUI1024Panel extends JPanel {
 		//gameLogic.resizeBoard(Integer.parseInt(firstBoard[0]), Integer.parseInt(firstBoard[1]), 512);
 
 		// Initialize Menu
-		mb = new JMenuBar();
+		menuBar = new JMenuBar();
 		options = new JMenu("Options");
-		reset = new JMenuItem("Reset");
-		exit = new JMenuItem ("Exit");
-		changeGoalScore = new JMenuItem("Change your goal score");
-		changeBoardSize = new JMenuItem("Change your board size");
+		resetItem = new JMenuItem("Reset");
+		exitItem = new JMenuItem ("Exit");
+		changeGoalScoreItem = new JMenuItem("Change your goal score");
+		changeBoardSizeItem = new JMenuItem("Change your board size");
 		
-		options.add(reset);
-		options.add(changeGoalScore);
-		options.add(changeBoardSize);
-		options.add(exit);
+		options.add(resetItem);
+		options.add(changeGoalScoreItem);
+		options.add(changeBoardSizeItem);
+		options.add(exitItem);
 
-		mb.add(options);
-		reset.addActionListener(new ActionListener() {
+		menuBar.add(options);
+		resetItem.addActionListener(new ActionListener() {
 			public void actionPerformed (ActionEvent e) {
 				gameLogic.reset();
 				playedSessions++;
 				updateBoard();
 			}
 		});
-		exit.addActionListener(new ActionListener() {
+		exitItem.addActionListener(new ActionListener() {
 			public void actionPerformed (ActionEvent e) {
 				System.exit(0);
 			}
 		});
-		changeGoalScore.addActionListener(new ActionListener() {
+		changeGoalScoreItem.addActionListener(new ActionListener() {
 			public void actionPerformed (ActionEvent e) {
 				String newValue = JOptionPane.showInputDialog(null, "Enter new goal: ");
+				if(newValue == null) {
+					return;
+				}
 				try {
 					gameLogic.resizeBoard(nRows, nCols, Integer.parseInt(newValue));
+					winningVal = Integer.parseInt(newValue);
 					gameLogic.reset();
 					playedSessions++;
 					updateBoard();
@@ -128,10 +137,13 @@ public class GUI1024Panel extends JPanel {
 				}
 			}
 		});
-		changeBoardSize.addActionListener(new ActionListener() {
+		changeBoardSizeItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				boardSize = JOptionPane.showInputDialog(null, "Choose values for rows and columns (ROWxCOL): ");
 				while(!isValidBoardSize(boardSize)) {
+					if(boardSize == null) {
+						return;
+					}
 					JOptionPane.showMessageDialog(null, "Please enter a valid board size. Please try again.");
 					boardSize = JOptionPane.showInputDialog(null, "Choose values for rows and columns (ROWxCOL): ");
 				}
@@ -150,9 +162,6 @@ public class GUI1024Panel extends JPanel {
 						gamePanel.remove(gameBoardUI[k][m]);
 					}
 				}
-
-				//resizes the board, but keeps old winning value
-				winningVal = gameLogic.getWinningVal();
 				resizeBoard();
 			}
 		});
@@ -175,30 +184,40 @@ public class GUI1024Panel extends JPanel {
 
 		c.gridx = 0;
 		c.gridy = 1;
-		p.add(curScore, c);
+		p.add(currentScoreLabel, c);
 
 		c.gridx = 0;
 		c.gridy = 2;
-		p.add(highScore, c);
+		p.add(highScoreLabel, c);
 
 		c.gridx = 0;
-		c.gridy = 2;
-		p.add(sessionsPlayed);
+		c.gridy = 3;
+		p.add(sessionsPlayedLabel, c);
+		
+		c.gridx = 0;
+		c.gridy = 4;
+		p.add(numSlidesLabel, c);
+		
+		c.gridx = 0;
+		c.gridy = 5;
+		p.add(numWinsLabel, c);
 	}
 
 
 	private void updateBoard() {
-		curScore.setText("Current Score: " + gameLogic.getCurrentScore());
-		if (highscore < gameLogic.getCurrentScore()) {
-			highscore = gameLogic.getCurrentScore();
+		currentScoreLabel.setText("Current Score: " + getCurrentScore());
+		if (highScore < getCurrentScore()) {
+			highScore = getCurrentScore();
 		} 
-		highScore.setText("High Score: " + highscore);
-		sessionsPlayed.setText("Sessions Played: " + playedSessions);
+		highScoreLabel.setText("High Score: " + highScore);
+		sessionsPlayedLabel.setText("Sessions Played: " + playedSessions);
+		numSlidesLabel.setText("Number of Slides: " + numSlides);
+		numWinsLabel.setText("Number of Wins: " + numWins);
 
 		for (JLabel[] row : gameBoardUI)
 			for (JLabel s : row) {
 				s.setText("");
-				s.setBackground(Color.GRAY);
+				s.setBackground(Color.GRAY.brighter());
 				s.setOpaque(true);
 			}
 
@@ -212,7 +231,7 @@ public class GUI1024Panel extends JPanel {
 			z.setText(String.valueOf(Math.abs(c.getValue())));
 			
 			// changing tile colors based on value (Dynamic implementation)
-			int green = (int)(-256.0/gameLogic.getWinningVal()*c.getValue() + 256);
+			int green = (int)(-256.0 / winningVal * c.getValue() + 256);
 			z.setBackground(new Color(255, green, 0));
 		}
 	}
@@ -248,9 +267,10 @@ public class GUI1024Panel extends JPanel {
 				}
 			}
 			if (moved) {
-				gameLogic.currentScore = gameLogic.getCurrentScore();
+				numSlides++;
 				updateBoard();
 				if (gameLogic.getStatus().equals(GameStatus.USER_WON)) {
+					numWins++;
 					JOptionPane.showMessageDialog(null, "You won");
 					int resp = JOptionPane.showConfirmDialog(null, "Do you want to play again?", "YOU WON",
 							JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
@@ -294,11 +314,10 @@ public class GUI1024Panel extends JPanel {
 		gameLogic = new NumberGameArrayList();
 		
 		//checks if winningVal has been changed, used for changing board size while keeping old winningVal
-		if(winningVal != 0) {
-			gameLogic.setWinningVal(winningVal);
-		}
-		gameLogic.currentScore = 0;
-		gameLogic.resizeBoard(nRows, nCols, gameLogic.getWinningVal()); 
+//		if(winningVal != 0) {
+//			gameLogic.setWinningVal(winningVal);
+//		}
+		gameLogic.resizeBoard(nRows, nCols, winningVal); 
 
 		// Update the GUI
 		// Start with changing the panel size and creating a new
@@ -343,8 +362,8 @@ public class GUI1024Panel extends JPanel {
 		if(boardSize == null) return false;
 		if(boardSize.split("x").length == 2) {
 			try {
-				int tempNumRows = Integer.parseInt(boardSize.split("x")[0]);
-				int tempNumCols = Integer.parseInt(boardSize.split("x")[1]);
+				int tempNumRows = Integer.parseInt(boardSize.split("x", 2)[0]);
+				int tempNumCols = Integer.parseInt(boardSize.split("x", 2)[1]);
 				if(tempNumRows > 1 && tempNumCols > 1) {
 					return true;
 				}
@@ -354,5 +373,17 @@ public class GUI1024Panel extends JPanel {
 			}
 		}
 		return false;
+	}
+	
+	private int getCurrentScore() {
+		int highest = 0;
+
+	    for (int s = 0; s < gameLogic.getNonEmptyTiles().size(); s++){
+	        int curValue = gameLogic.getNonEmptyTiles().get(s).getValue();
+	        if (curValue > highest) {
+	            highest = curValue;
+	        }
+	    }
+		return highest;
 	}
 }

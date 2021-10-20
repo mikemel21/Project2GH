@@ -77,7 +77,7 @@ public class TextUI {
         /* To keep the right margin within 75 columns, we split the
            following long string literal into two lines
          */
-        System.out.print ("Slide direction (W, S, D, A), " +
+        System.out.print ("Slide direction (W, A, S, D), " +
                 "[U]ndo or [Q]uit? ");
 
 

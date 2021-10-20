@@ -11,7 +11,7 @@ public class GUI1024 {
         //panel.setFocusable(true);
         gui.getContentPane().add(panel);
         //gui.add(panel.p);
-        gui.setJMenuBar(panel.mb);
+        gui.setJMenuBar(panel.menuBar);
         gui.setSize(panel.getSize());
         gui.setVisible(true);
     }  
