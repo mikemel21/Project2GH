@@ -1,11 +1,9 @@
-package Project2;
+package project2;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
-import Project2.Cell;
+import project2.Cell;
 
 public class NumberGameArrayList implements NumberSlider {
 
@@ -15,18 +13,11 @@ public class NumberGameArrayList implements NumberSlider {
 	 */
 	private int numRows, numCols, winningVal;
 	
-	public int getWinningVal() {
-		return winningVal;
-	}
-
-	public void setWinningVal(int winningVal) {
-		this.winningVal = winningVal;
-	}
-
 	/**
 	 * stores the highest tile value of current game
 	 */
 	public int currentScore;
+	
 	/**
 	 * stores the overall highscore of game session
 	 */
@@ -36,6 +27,7 @@ public class NumberGameArrayList implements NumberSlider {
 	 * ArrayList for all cells on the board
 	 */ 
 	private ArrayList<Cell> cells;
+	
 	/**
 	 * ArrayList that holds the different states of the board
 	 */
@@ -44,15 +36,59 @@ public class NumberGameArrayList implements NumberSlider {
 	
 	public NumberGameArrayList () {
 		cells = new ArrayList<Cell>();
-		currentScore = 0;
+		winningVal = 2048;
 	}
 	
-//	private void setGameStatus(GameStatus gameStatus) {
-//		this.gameStatus = gameStatus;
-//	}
+	public int getWinningVal() {
+		return winningVal;
+	}
+
+	public void setWinningVal(int winningVal) {
+		if(!isPowerTwo(winningVal)) {
+			throw new IllegalArgumentException();
+		}
+		this.winningVal = winningVal;
+	}
+	
+	/**
+	 * goes through nonEmptyTiles() to find the highest tile value
+	 * @return the highest tile value of current game
+	 */
+	public int getCurrentScore() {
+//		int highestIndex = 0;
+//	    int highest = getNonEmptyTiles().get(0).getValue();
+		int highest = 0;
+
+	    for (int s = 0; s < getNonEmptyTiles().size(); s++){
+	        int curValue = getNonEmptyTiles().get(s).getValue();
+	        if (curValue > highest) {
+	            highest = curValue;
+//	            highestIndex = s;
+	        }
+	    }
+//	    System.out.println(highest);
+		return highest;
+	}
+	
+	/**
+	 * checks if the current score is greater than the highscore.
+	 * If the current score is > highscore, change the highscore to the current score
+	 * 
+	 * @return highscore value
+	 */
+	public int getHighScore() {
+		if (highScore < getCurrentScore()) {
+			return getCurrentScore();
+		} else {
+			return highScore;
+		}
+	}
 	
 	@Override
 	public void resizeBoard(int numRows, int numCols, int winningVal) {
+		if((numRows < 2 || numCols < 2) || !isPowerTwo(winningVal) ||  winningVal <= 4) {
+			throw new IllegalArgumentException();
+		}
 		cells = new ArrayList<Cell>();
 		
 		//adds a new cell for each row and column.
@@ -81,7 +117,8 @@ public class NumberGameArrayList implements NumberSlider {
 		placeRandomValue();
 		placeRandomValue();
 		gameStatus = GameStatus.IN_PROGRESS;
-		
+		boardStates.clear();
+		currentScore = getCurrentScore();
 //		int[][] ref = {
 //				{8, 4, 2, 4,},
 //				{2, 2, 4, 2,},
@@ -106,8 +143,7 @@ public class NumberGameArrayList implements NumberSlider {
 	public Cell placeRandomValue() {
 		Cell randCell = getRandomCell();
 		if(randCell == null) {
-			//this should only happen if there were no empty squares, will implement later
-			return null;
+			throw new IllegalStateException();
 		}
 		else {
 			randCell.setValue(getRandomValue());
@@ -120,10 +156,9 @@ public class NumberGameArrayList implements NumberSlider {
 		boolean moved = false;
 		
 		ArrayList<Cell> currentBoardState = new ArrayList<Cell>();
-		for(Cell c : cells) {
+		for(Cell c : getNonEmptyTiles()) {
 			currentBoardState.add(new Cell(c.getRow(), c.getColumn(), c.getValue()));
 		}
-		boardStates.add(currentBoardState);
 		
 		if(dir == SlideDirection.RIGHT) {
 			moved = slideRight();
@@ -140,10 +175,9 @@ public class NumberGameArrayList implements NumberSlider {
 		
 		if(moved) {
 			placeRandomValue();
+			boardStates.add(currentBoardState);
 		}
-		else {
-			boardStates.remove(boardStates.size() - 1);
-		}
+		
 		return moved;
 	}
 	
@@ -178,23 +212,36 @@ public class NumberGameArrayList implements NumberSlider {
 	 * checks the cell ArrayList to see if any cell as the winning value
 	 * @return true if a cell has the winning value and false if no cells have the winning value
 	 */
-	public boolean hasWinningValue () {
-		for (int i = 0; i < getNonEmptyTiles().size(); i++) {
-			if (getNonEmptyTiles().get(i).getValue() >= winningVal) {
-				return true;
-			} 
-		}
-		return false;
-	}
-
 	@Override
 	public void undo() {
 		if(boardStates.size() == 0) {
 			throw new IllegalStateException();
 		}
 		else {
-			cells = boardStates.remove(boardStates.size() - 1);
+			for(Cell c : cells) {
+				c.setValue(0);
+			}
+			ArrayList<Cell> boardState = boardStates.remove(boardStates.size() - 1);
+			for(Cell c : boardState) {
+				getCellAt(c.getRow(), c.getColumn()).setValue(c.getValue());
+			}
 		}
+	}
+	
+	private boolean isPowerTwo(int z) {
+		int v = 1;
+		while(v < z)
+			v *= 2;
+		return v == z;
+	}
+	
+	private boolean hasWinningValue () {
+		for (int i = 0; i < getNonEmptyTiles().size(); i++) {
+			if (getNonEmptyTiles().get(i).getValue() >= winningVal) {
+				return true;
+			} 
+		}
+		return false;
 	}
 	
 	private boolean movePossible() {
@@ -236,8 +283,10 @@ public class NumberGameArrayList implements NumberSlider {
 	 * @return the cell at the appropriate index
 	 */
 	private Cell getCellAt (int row, int col) {
-
-		//we will probably need exceptions thrown here to make sure row and col are good inputs
+		if(row >= numRows || col >= numCols) {
+			throw new IllegalArgumentException();
+		}
+		
 		int index = numCols * row + col;
 
 		return cells.get(index);
@@ -298,7 +347,7 @@ public class NumberGameArrayList implements NumberSlider {
 		int randIndex = getRandomIndex();
 		if(randIndex == -1) {
 			
-			//should only happen when board is full, will implement later
+			//should only happen when board is full
 			return null;
 		}
 		else {
@@ -447,24 +496,4 @@ public class NumberGameArrayList implements NumberSlider {
 		}
 		return moved;
 	}
-	
-	/**
-	 * goes through nonEmptyTiles() to find the highest tile value
-	 * @return the highest tile value of current game
-	 */
-	public int getCurrentScore() {
-		int highestIndex = 0;
-	    int highest = getNonEmptyTiles().get(0).getValue();
-
-	    for (int s = 1; s < getNonEmptyTiles().size(); s++){
-	        int curValue = getNonEmptyTiles().get(s).getValue();
-	        if (curValue > highest) {
-	            highest = curValue;
-	            highestIndex = s;
-	        }
-	    }
-	    System.out.println(highest);
-		return highest;
-	}
-
 }

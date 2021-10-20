@@ -1,4 +1,4 @@
-package Project2;
+package project2;
 
 public class Cell implements Comparable<Cell> {
     private int row, column, value;

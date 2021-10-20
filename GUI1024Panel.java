@@ -1,4 +1,4 @@
-package Project2;
+package project2;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
@@ -16,27 +16,27 @@ public class GUI1024Panel extends JPanel {
 	private int nRows, nCols;
 	private JButton upButton, downButton, leftButton, rightButton;
 	private JPanel playPanel, gamePanel;
-	
+
 	private JMenu options;
-	private JMenu statistics;
 	public JMenuBar mb;
-	
+
 	public JLabel curScore = new JLabel();
-	public JLabel highScore = new JLabel("High Score: ");
-	public JLabel sessionsPlayed = new JLabel ("Games Played: ");
-	
+	public JLabel highScore = new JLabel();
+	public JLabel sessionsPlayed = new JLabel();
+
 	// Options: JMenu Items
 	private JMenuItem reset;
 	private JMenuItem exit;
 	private JMenuItem changeGoalScore;
-	// private JMenuItem resizeTheBoard;
-	
+	private JMenuItem changeBoardSize;
+
 	public JPanel p;
-	
+
 	// set Board Size (FIX CANCEL OPTION)
-	public String boardsi = JOptionPane.showInputDialog("Input board size (ROWxCOL): ");
-	public String[] firstBoard = boardsi.split("x");
-	
+	private String boardSize;
+	private String[] firstBoard;
+	private int winningVal = 0;
+
 	private int highscore;
 	private int playedSessions;
 
@@ -49,7 +49,11 @@ public class GUI1024Panel extends JPanel {
 	}
 
 	private void initializeGame() {
-		
+		boardSize = JOptionPane.showInputDialog(null, "Choose values for rows and columns (ROWxCOL): ");
+		while(!isValidBoardSize(boardSize)) {
+			JOptionPane.showMessageDialog(null, "Please enter a valid board size. Please try again.");
+			boardSize = JOptionPane.showInputDialog(null, "Choose values for rows and columns (ROWxCOL): ");
+		}
 		// Initialize GridBagLayoutConstraints
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
@@ -61,7 +65,7 @@ public class GUI1024Panel extends JPanel {
 		//c.gridwidth = 1;
 		// Specify custom height
 		//c.ipady = 40;
-		
+
 		// Initialize the game board appearance
 		setBorder(BorderFactory.createLineBorder(Color.ORANGE));
 		setLayout(new GridBagLayout());
@@ -71,48 +75,92 @@ public class GUI1024Panel extends JPanel {
 		// Initialize the game panel
 		gamePanel = new JPanel();
 		playPanel.add(gamePanel, c); 	
-		
+
 		// Allow keys to be pressed to control the game
 		setFocusable(true);
 		addKeyListener(new SlideListener());
-		
+
 		// Initialize the game GUI and logic
 		resizeBoard();
+
 		//gameLogic.resizeBoard(Integer.parseInt(firstBoard[0]), Integer.parseInt(firstBoard[1]), 512);
-		
+
 		// Initialize Menu
 		mb = new JMenuBar();
 		options = new JMenu("Options");
 		reset = new JMenuItem("Reset");
 		exit = new JMenuItem ("Exit");
 		changeGoalScore = new JMenuItem("Change your goal score");
-		
-		statistics = new JMenu("Statistics");
-		
+		changeBoardSize = new JMenuItem("Change your board size");
+
 		options.add(reset);
-		
+
 		options.add(changeGoalScore);
+		options.add(changeBoardSize);
 		options.add(exit);
-		
+
 		mb.add(options);
-		mb.add(statistics);
 		reset.addActionListener(new ActionListener() {
 			public void actionPerformed (ActionEvent e) {
 				gameLogic.reset();
+				playedSessions++;
 				updateBoard();
-			}});
+			}
+		});
 		exit.addActionListener(new ActionListener() {
 			public void actionPerformed (ActionEvent e) {
 				System.exit(0);
-			}});
+			}
+		});
 		changeGoalScore.addActionListener(new ActionListener() {
 			public void actionPerformed (ActionEvent e) {
 				String newValue = JOptionPane.showInputDialog(null, "Enter new goal: ");
-				gameLogic.setWinningVal(Integer.parseInt(newValue));
-				updateBoard();
-			}});
+				try {
+					gameLogic.resizeBoard(nRows, nCols, Integer.parseInt(newValue));
+					gameLogic.reset();
+					playedSessions++;
+					updateBoard();
+				} 
+				catch (NumberFormatException a) {
+					JOptionPane.showMessageDialog(null, "Value must be a whole number! Please try again.");
+				} 
+				catch (IllegalArgumentException b) {
+					JOptionPane.showMessageDialog(null, "Value must be a power of two greater than 4! Please try again.");
+				}
+			}
+		});
+		changeBoardSize.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				boardSize = JOptionPane.showInputDialog(null, "Choose values for rows and columns (ROWxCOL): ");
+				while(!isValidBoardSize(boardSize)) {
+					JOptionPane.showMessageDialog(null, "Please enter a valid board size. Please try again.");
+					boardSize = JOptionPane.showInputDialog(null, "Choose values for rows and columns (ROWxCOL): ");
+				}
+				for (int k = 0; k < nRows; k++) {
+					for (int m = 0; m < nCols; m++) {
+
+						//c.fill = GridBagConstraints.HORIZONTAL;
+						// Indicate which column 
+						c.gridx = m;
+						// Indicate which row
+						c.gridy = k;
+						// Indicate number of columns to span
+						c.gridwidth = 1;
+						// Specify custom height
+						//						c.ipady = 40;
+						gamePanel.remove(gameBoardUI[k][m]);
+					}
+				}
+
+				//resizes the board, but keeps old winning value
+				winningVal = gameLogic.getWinningVal();
+				resizeBoard();
+			}
+		});
+
+
 	}
-	
+
 	public void LabelPanel() {
 		// Initialize GridBagLayoutConstraints
 		GridBagConstraints c = new GridBagConstraints();
@@ -121,35 +169,41 @@ public class GUI1024Panel extends JPanel {
 		c.gridx = 0; 
 		// Indicate which row
 		c.gridy = 0;
-		
+
 		// Initialize the game board appearance
 		setLayout(new GridBagLayout());
 		p = new JPanel();
 		p.setLayout(new GridBagLayout());
 		add(p);
-		
+
 		c.gridx = 0;
 		c.gridy = 1;
 		p.add(curScore, c);
 
 		c.gridx = 0;
 		c.gridy = 2;
-		highScore.setText("high score: " + highscore);
 		p.add(highScore, c);
-		
+
+
 		c.gridx = 0;
-		c.gridy = 3;
-		sessionsPlayed.setText("high score: " + playedSessions);
+		c.gridy = 2;
 		p.add(sessionsPlayed);
 	}
-	
+
 
 	private void updateBoard() {
-		curScore.setText("current score: " + gameLogic.currentScore);
-		
+		curScore.setText("Current Score: " + gameLogic.getCurrentScore());
+		if (highscore < gameLogic.getCurrentScore()) {
+			highscore = gameLogic.getCurrentScore();
+		} 
+		highScore.setText("High Score: " + highscore);
+		sessionsPlayed.setText("Sessions Played: " + playedSessions);
+
 		for (JLabel[] row : gameBoardUI)
 			for (JLabel s : row) {
 				s.setText("");
+				s.setBackground(Color.GRAY);
+				s.setOpaque(true);
 			}
 
 		ArrayList<Cell> out = gameLogic.getNonEmptyTiles();
@@ -160,32 +214,10 @@ public class GUI1024Panel extends JPanel {
 		for (Cell c : out) { 
 			JLabel z = gameBoardUI[c.getRow()][c.getColumn()];
 			z.setText(String.valueOf(Math.abs(c.getValue())));
-			
-			// BASIC: change color of text based on value
-			if (c.getValue() == 2) {
-				z.setForeground(Color.GRAY);
-			} else if (c.getValue() == 4) {
-				z.setForeground(Color.DARK_GRAY);
-			} else if (c.getValue() == 8) {
-				z.setForeground(Color.ORANGE);
-			} else if (c.getValue() == 16) {
-				z.setForeground(Color.ORANGE.darker());
-			} else if (c.getValue() == 32) {
-				z.setForeground(Color.RED);
-			} else if (c.getValue() == 64) {
-				z.setForeground(Color.RED.darker());
-			} else if (c.getValue() == 128) {
-				z.setForeground(Color.RED.darker().darker());
-			} else if (c.getValue() == 256) {
-				z.setForeground(Color.BLUE);
-			} else if (c.getValue() == 512) {
-				z.setForeground(Color.MAGENTA);
-			} else if (c.getValue() == 1024) {
-				z.setForeground(Color.YELLOW);
-			} else if (c.getValue() >= 2048) {
-				z.setForeground(Color.YELLOW.darker());
-			} 
-			//z.setForeground(c.getValue() > 0 ? Color.BLACK : Color.RED);
+
+			// changing tile colors based on value (Dynamic implementation)
+			int green = (int)(-256.0/gameLogic.getWinningVal()*c.getValue() + 256);
+			z.setBackground(new Color(255, green, 0));
 		}
 	}
 
@@ -195,7 +227,6 @@ public class GUI1024Panel extends JPanel {
 
 		@Override
 		public void keyPressed(KeyEvent e) {
-
 			boolean moved = false;
 			switch (e.getKeyCode()) {
 			case KeyEvent.VK_UP:
@@ -223,28 +254,36 @@ public class GUI1024Panel extends JPanel {
 			if (moved) {
 				gameLogic.currentScore = gameLogic.getCurrentScore();
 				updateBoard();
-				if (gameLogic.getStatus().equals(GameStatus.USER_WON))
+
+				if (gameLogic.getStatus().equals(GameStatus.USER_WON)) {
 					JOptionPane.showMessageDialog(null, "You won");
-				else if (gameLogic.getStatus().equals(GameStatus.USER_LOST)) {
-					int resp = JOptionPane.showConfirmDialog(null, "Do you want to play again?", "TentOnly Over!",
+					int resp = JOptionPane.showConfirmDialog(null, "Do you want to play again?", "YOU WON",
 							JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 					if (resp == JOptionPane.YES_OPTION) {
-						playedSessions += 1;
 						gameLogic.reset();
+						playedSessions += 1;
 						updateBoard();
 					} else {
 						System.exit(0);
 					}
-				}
-				// sets highscore
-				if (gameLogic.getCurrentScore() > highscore) {
-					highscore = gameLogic.getCurrentScore();
-				}
+				} else if (gameLogic.getStatus().equals(GameStatus.USER_LOST)) {
+					int resp = JOptionPane.showConfirmDialog(null, "Do you want to play again?", "TentOnly Over!",
+							JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+					if (resp == JOptionPane.YES_OPTION) {
+						gameLogic.reset();
+						playedSessions += 1;
+						updateBoard();
+					} else {
+						System.exit(0);
+					}
+				} 
 			}
 		}
 
 		@Override
-		public void keyReleased(KeyEvent e) { }
+		public void keyReleased(KeyEvent e) {
+			
+		}
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -253,12 +292,19 @@ public class GUI1024Panel extends JPanel {
 	}
 
 	public void resizeBoard() {
-
+		
 		// Initialize the game logic
-		nRows = Integer.parseInt(firstBoard[0]);
-		nCols = Integer.parseInt(firstBoard[1]);
-		gameLogic = new NumberGameArrayList(); 
-		gameLogic.resizeBoard(nRows, nCols, 512); 
+		nRows = Integer.parseInt(boardSize.split("x")[0]);
+		nCols = Integer.parseInt(boardSize.split("x")[1]);
+
+		gameLogic = new NumberGameArrayList();
+		
+		//checks if winningVal has been changed, used for changing board size while keeping old winningVal
+		if(winningVal != 0) {
+			gameLogic.setWinningVal(winningVal);
+		}
+		gameLogic.currentScore = 0;
+		gameLogic.resizeBoard(nRows, nCols, gameLogic.getWinningVal()); 
 
 		// Update the GUI
 		// Start with changing the panel size and creating a new
@@ -281,7 +327,7 @@ public class GUI1024Panel extends JPanel {
 				gameBoardUI[k][m].setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
 				gameBoardUI[k][m].setPreferredSize(new Dimension(100, 100));
 				gameBoardUI[k][m].setMinimumSize(new Dimension(100, 100));
-	
+
 				//						c.fill = GridBagConstraints.HORIZONTAL;
 				// Indicate which column 
 				c.gridx = m;
@@ -297,5 +343,22 @@ public class GUI1024Panel extends JPanel {
 
 		gameLogic.reset();
 		updateBoard();
+	}
+	
+	private boolean isValidBoardSize(String boardSize) {
+		if(boardSize == null) return false;
+		if(boardSize.split("x").length == 2) {
+			try {
+				int tempNumRows = Integer.parseInt(boardSize.split("x")[0]);
+				int tempNumCols = Integer.parseInt(boardSize.split("x")[1]);
+				if(tempNumRows > 1 && tempNumCols > 1) {
+					return true;
+				}
+			}
+			catch (NumberFormatException a) {
+				return false;
+			}
+		}
+		return false;
 	}
 }

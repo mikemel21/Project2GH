@@ -1,6 +1,4 @@
-package Project2;
-
-import java.awt.BorderLayout;
+package project2;
 
 import javax.swing.*;
 
