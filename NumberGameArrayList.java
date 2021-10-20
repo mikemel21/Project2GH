@@ -418,20 +418,23 @@ public class NumberGameArrayList implements NumberSlider {
 		boolean moved = false;
 		for(int row = 0; row < numRows; row++) {
 
-			//The farthest right column that can be used. Used to ensure a tile doesn't merge twice
+			//The farthest right column that can be used. 
+			//Used to ensure a tile doesn't merge twice
 			int accessibleCol = numCols;
 			for(int col = numCols - 2; col >= 0; col--) {
 				if(getCellAt(row, col).getValue() != 0) {
 					for(int i = 1; col + i < accessibleCol; i++) {
 						if(getCellAt(row, col + i).getValue() == 
 								getCellAt(row, col + i - 1).getValue()) {
-							getCellAt(row, col + i).setValue(2 * getCellAt(row, col + i).getValue());
+							getCellAt(row, col + i).setValue(
+									2 * getCellAt(row, col + i).getValue());
 
 							//sets the accessibleCol to the current column
 							accessibleCol = col + i;
 						}
 						else if(getCellAt(row, col + i).getValue() == 0){
-							getCellAt(row, col + i).setValue(getCellAt(row, col + i - 1).getValue());
+							getCellAt(row, col + i).setValue(
+									getCellAt(row, col + i - 1).getValue());
 						}
 						else {
 							break;
@@ -454,20 +457,23 @@ public class NumberGameArrayList implements NumberSlider {
 		boolean moved = false;
 		for(int col = 0; col < numCols; col++) {
 
-			//The farthest right column that can be used. Used to ensure a tile doesn't merge twice
+			//The farthest down row that can be used. 
+			//Used to ensure a tile doesn't merge twice
 			int accessibleRow = numRows;
 			for(int row = numRows - 2; row >= 0; row--) {
 				if(getCellAt(row, col).getValue() != 0) {
 					for(int i = 1; row + i < accessibleRow; i++) {
 						if(getCellAt(row + i, col).getValue() == 
 								getCellAt(row + i - 1, col).getValue()) {
-							getCellAt(row + i, col).setValue(2 * getCellAt(row + i, col).getValue());
+							getCellAt(row + i, col).setValue(
+									2 * getCellAt(row + i, col).getValue());
 
 							//sets the accessibleCol to the current column
 							accessibleRow = row + i;
 						}
 						else if(getCellAt(row + i, col).getValue() == 0){
-							getCellAt(row + i, col).setValue(getCellAt(row + i - 1, col).getValue());
+							getCellAt(row + i, col).setValue(
+									getCellAt(row + i - 1, col).getValue());
 						}
 						else {
 							break;
@@ -490,20 +496,23 @@ public class NumberGameArrayList implements NumberSlider {
 		boolean moved = false;
 		for(int row = 0; row < numRows; row++) {
 
-			//The farthest right column that can be used. Used to ensure a tile doesn't merge twice
+			//The farthest left column that can be used. 
+			//Used to ensure a tile doesn't merge twice
 			int accessibleCol = -1;
 			for(int col = 1; col < numCols; col++) {
 				if(getCellAt(row, col).getValue() != 0) {
 					for(int i = 1; col - i > accessibleCol; i++) {
 						if(getCellAt(row, col - i).getValue() == 
 								getCellAt(row, col - i + 1).getValue()) {
-							getCellAt(row, col - i).setValue(2 * getCellAt(row, col - i).getValue());
+							getCellAt(row, col - i).setValue(
+									2 * getCellAt(row, col - i).getValue());
 
 							//sets the accessibleCol to the current column
 							accessibleCol = col - i;
 						}
 						else if(getCellAt(row, col - i).getValue() == 0) {
-							getCellAt(row, col - i).setValue(getCellAt(row, col - i + 1).getValue());
+							getCellAt(row, col - i).setValue(
+									getCellAt(row, col - i + 1).getValue());
 						}
 						else {
 							break;
@@ -526,20 +535,23 @@ public class NumberGameArrayList implements NumberSlider {
 		boolean moved = false;
 		for(int col = 0; col < numCols; col++) {
 
-			//The farthest right column that can be used. Used to ensure a tile doesn't merge twice
+			//The farthest up row that can be used. 
+			//Used to ensure a tile doesn't merge twice
 			int accessibleRow = -1;
 			for(int row = 1; row < numRows; row++) {
 				if(getCellAt(row, col).getValue() != 0) {
 					for(int i = 1; row - i > accessibleRow; i++) {
 						if(getCellAt(row - i, col).getValue() == 
 								getCellAt(row - i + 1, col).getValue()) {
-							getCellAt(row - i, col).setValue(2 * getCellAt(row - i, col).getValue());
+							getCellAt(row - i, col).setValue(
+									2 * getCellAt(row - i, col).getValue());
 
 							//sets the accessibleCol to the current column
 							accessibleRow = row - i;
 						}
 						else if(getCellAt(row - i, col).getValue() == 0){
-							getCellAt(row - i, col).setValue(getCellAt(row - i + 1, col).getValue());
+							getCellAt(row - i, col).setValue(
+									getCellAt(row - i + 1, col).getValue());
 						}
 						else {
 							break;
