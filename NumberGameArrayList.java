@@ -103,8 +103,6 @@ public class NumberGameArrayList implements NumberSlider {
 	 */
 	@Override
 	public void setValues(int[][] ref) {
-
-		//loops through the 2d array and sets the value of the cell at that location to that value.
 		for (int row = 0; row < ref.length; row++) {
 			for (int col = 0; col < ref[row].length; col++) {
 				getCellAt(row, col).setValue(ref[row][col]);
